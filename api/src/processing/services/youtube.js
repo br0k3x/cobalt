@@ -65,6 +65,7 @@ const videoQualities = [144, 240, 360, 480, 720, 1080, 1440, 2160, 4320];
 
 let unavailableResponses = 0;
 
+<<<<<<< HEAD
 
 
 let encryptedHostFlags = "";
@@ -90,6 +91,9 @@ const fetchEncryptedHostFlags = async (fetch) => {
 let poModule;
 
 const cloneInnertube = async (customFetch, useSession, requestIP) => {
+=======
+const cloneInnertube = async (customFetch, useSession) => {
+>>>>>>> 5a1b4ae0 (api/youtube: force reset innertube player on 403)
     const shouldRefreshPlayer = globalThis.FORCE_RESET_INNERTUBE_PLAYER || lastRefreshedAt + PLAYER_REFRESH_PERIOD < new Date();
 
     const rawCookie = getCookie('youtube');
@@ -104,6 +108,7 @@ const cloneInnertube = async (customFetch, useSession, requestIP) => {
 
     if (!innertube || shouldRefreshPlayer) {
         globalThis.FORCE_RESET_INNERTUBE_PLAYER = false;
+<<<<<<< HEAD
         let player_id;
         if (env.ytPlayerIds) {
             player_id = env.ytPlayerIds[
@@ -111,6 +116,8 @@ const cloneInnertube = async (customFetch, useSession, requestIP) => {
             ];
         }
 
+=======
+>>>>>>> 5a1b4ae0 (api/youtube: force reset innertube player on 403)
         innertube = await Innertube.create({
             cache: new UniversalCache(false),
             fetch: customFetch,
@@ -426,8 +433,14 @@ export default async function (o) {
     switch (playability.status) {
         case "LOGIN_REQUIRED":
             if (playability.reason.endsWith("bot")) {
+<<<<<<< HEAD
                 lastRefreshedAt = +new Date(0);
                 return { error: "youtube.login", retry: true }
+=======
+                // Instantly refresh
+                lastRefreshedAt = +new Date(0);
+                return { error: "youtube.login" }
+>>>>>>> 5a1b4ae0 (api/youtube: force reset innertube player on 403)
             }
             if (playability.reason.endsWith("age") || playability.reason.endsWith("inappropriate for some users.")) {
                 return { error: "content.video.age" }
