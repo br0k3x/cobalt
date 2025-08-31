@@ -1,7 +1,7 @@
 import HLS from "hls-parser";
 
 import { fetch } from "undici";
-import { Innertube, Session } from "youtubei.js";
+import { Innertube, Session, Log, UniversalCache } from "youtubei.js";
 
 import { env } from "../../config.js";
 import { getCookie } from "../cookie/manager.js";
@@ -64,6 +64,7 @@ const cloneInnertube = async (customFetch, useSession) => {
     if (!innertube || shouldRefreshPlayer) {
         globalThis.FORCE_RESET_INNERTUBE_PLAYER = false;
         innertube = await Innertube.create({
+            cache: new UniversalCache(false),
             fetch: customFetch,
             retrieve_player,
             cookie,
