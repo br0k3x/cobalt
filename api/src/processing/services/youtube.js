@@ -1,8 +1,13 @@
 import HLS from "hls-parser";
 import ivm from "isolated-vm";
 
+<<<<<<< HEAD
 import { fetch, Request } from "undici";
 import { Innertube, Platform, Session, UniversalCache } from "youtubei.js";
+=======
+import { fetch } from "undici";
+import { Innertube, Session, Log, UniversalCache } from "youtubei.js";
+>>>>>>> f4e32406 (api/youtube: add cache for player retrieval)
 
 import { env } from "../../config.js";
 import { getCookie } from "../cookie/manager.js";
