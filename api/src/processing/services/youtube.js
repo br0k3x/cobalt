@@ -70,6 +70,7 @@ const cloneInnertube = async (customFetch, useSession) => {
             cookie,
             po_token: useSession ? sessionTokens?.potoken : undefined,
             visitor_data: useSession ? sessionTokens?.visitor_data : undefined,
+            enable_session_cache: false,
         });
         lastRefreshedAt = +new Date();
     }
