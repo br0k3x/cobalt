@@ -132,9 +132,13 @@ const cloneInnertube = async (customFetch, useSession) => {
             visitor_data: useSession ? sessionTokens?.visitor_data : undefined,
             enable_session_cache: false,
 <<<<<<< HEAD
+<<<<<<< HEAD
             player_id,
 =======
 >>>>>>> dbd292ce (api/youtube: disable session cache)
+=======
+            player_id: env.ytPlayerId,
+>>>>>>> 0aa37b67 (api/env: add YOUTUBE_PLAYER_ID to override the player id)
         });
 
         if (env.ytGeneratePoTokens) {
