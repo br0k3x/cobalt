@@ -1,7 +1,7 @@
 import HLS from "hls-parser";
 
-import { fetch } from "undici";
-import { Innertube, Session, Log, UniversalCache } from "youtubei.js";
+import { Innertube, Session, UniversalCache, Platform } from "youtubei.js";
+import vm from 'node:vm';
 
 import { env } from "../../config.js";
 import { getCookie } from "../cookie/manager.js";
@@ -48,7 +48,29 @@ const videoQualities = [144, 240, 360, 480, 720, 1080, 1440, 2160, 4320];
 
 let unavailableResponses = 0;
 
+// https://ytjs.dev/guide/getting-started.html#providing-a-custom-javascript-interpreter
+const youtubeEval = async (data, env) => {
+    const properties = [];
+
+    if (env.n) {
+        properties.push(`n: exportedVars.nFunction("${env.n}")`)
+    }
+
+    if (env.sig) {
+        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`)
+    }
+
+    const code = `${data.output}\nconst result = { ${properties.join(', ')} }; result`;
+
+    // I'm aware that node's vms are very easy to escape and I
+    // probably shouldn't use it here to run arbitrary code
+    // fetched from Google - but I kinda trust them
+    // also no idea if im using this correctly
+    return vm.runInNewContext(code);
+}
+
 const cloneInnertube = async (customFetch, useSession) => {
+    Platform.shim.eval = youtubeEval;
     const shouldRefreshPlayer = globalThis.FORCE_RESET_INNERTUBE_PLAYER || lastRefreshedAt + PLAYER_REFRESH_PERIOD < new Date();
 
     const rawCookie = getCookie('youtube');
@@ -547,7 +569,7 @@ export default async function (o) {
         }
 
         if (!clientsWithNoCipher.includes(innertubeClient) && innertube) {
-            urls = audio.decipher(innertube.session.player);
+            urls = await audio.decipher(innertube.session.player);
         }
 
         let cover = `https://i.ytimg.com/vi/${o.id}/maxresdefault.jpg`;
@@ -594,8 +616,8 @@ export default async function (o) {
             filenameAttributes.extension = o.container === "auto" ? codecList[codec].container : o.container;
 
             if (!clientsWithNoCipher.includes(innertubeClient) && innertube) {
-                video = video.decipher(innertube.session.player);
-                audio = audio.decipher(innertube.session.player);
+                video = await video.decipher(innertube.session.player);
+                audio = await audio.decipher(innertube.session.player);
             } else {
                 video = video.url;
                 audio = audio.url;
