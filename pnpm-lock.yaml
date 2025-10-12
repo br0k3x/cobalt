@@ -62,8 +62,13 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       youtubei.js:
+<<<<<<< HEAD
         specifier: ^17.0.1
         version: 17.0.1
+=======
+        specifier: 16.0.0
+        version: 16.0.0
+>>>>>>> e4787103 (api: update youtube.js)
       zod:
         specifier: ^4.2.1
         version: 4.3.6
@@ -1567,6 +1572,13 @@ packages:
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
+<<<<<<< HEAD
+=======
+  jackspeak@4.0.2:
+    resolution: {integrity: sha512-bZsjR/iRjl1Nk1UkjGpAzLNfQtzuijhn2g+pbZb98HQ1Gk8vM9hfbxeMBP+M2/UUdwj0RqGG3mlvk2MsAqwvEw==}
+    engines: {node: 20 || >=22}
+
+>>>>>>> e4787103 (api: update youtube.js)
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -2468,8 +2480,13 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+<<<<<<< HEAD
   youtubei.js@17.0.1:
     resolution: {integrity: sha512-1lO4b8UqMDzE0oh2qEGzbBOd4UYRdxn/4PdpRM7BGTHxM6ddsEsKZTu90jp8V9FHVgC2h1UirQyqoqLiKwl+Zg==}
+=======
+  youtubei.js@16.0.0:
+    resolution: {integrity: sha512-aMx+ulnrxzsgVsxTr7gbBVnIjti2NQUlMwCoo1/MzICCJS3iMLOPUFdo7bSpwskL6ljzQ/LxmmB4WQC3FtkBlA==}
+>>>>>>> e4787103 (api: update youtube.js)
 
   zimmerframe@1.1.2:
     resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
@@ -3808,6 +3825,13 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
+<<<<<<< HEAD
+=======
+  jackspeak@4.0.2:
+    dependencies:
+      '@isaacs/cliui': 8.0.2
+
+>>>>>>> e4787103 (api: update youtube.js)
   joycon@3.1.1: {}
 
   js-yaml@3.14.1:
@@ -4685,7 +4709,11 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
+<<<<<<< HEAD
   youtubei.js@17.0.1:
+=======
+  youtubei.js@16.0.0:
+>>>>>>> e4787103 (api: update youtube.js)
     dependencies:
       '@bufbuild/protobuf': 2.2.5
       meriyah: 6.1.4

@@ -2,12 +2,17 @@ import HLS from "hls-parser";
 import ivm from "isolated-vm";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { fetch, Request } from "undici";
 import { Innertube, Platform, Session, UniversalCache } from "youtubei.js";
 =======
 import { fetch } from "undici";
 import { Innertube, Session, Log, UniversalCache } from "youtubei.js";
 >>>>>>> f4e32406 (api/youtube: add cache for player retrieval)
+=======
+import { Innertube, Session, UniversalCache, Platform } from "youtubei.js";
+import vm from 'node:vm';
+>>>>>>> e4787103 (api: update youtube.js)
 
 import { env } from "../../config.js";
 import { getCookie } from "../cookie/manager.js";
@@ -71,6 +76,7 @@ const videoQualities = [144, 240, 360, 480, 720, 1080, 1440, 2160, 4320];
 let unavailableResponses = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 let encryptedHostFlags = "";
@@ -99,6 +105,31 @@ const cloneInnertube = async (customFetch, useSession, requestIP) => {
 =======
 const cloneInnertube = async (customFetch, useSession) => {
 >>>>>>> 5a1b4ae0 (api/youtube: force reset innertube player on 403)
+=======
+// https://ytjs.dev/guide/getting-started.html#providing-a-custom-javascript-interpreter
+const youtubeEval = async (data, env) => {
+    const properties = [];
+
+    if (env.n) {
+        properties.push(`n: exportedVars.nFunction("${env.n}")`)
+    }
+
+    if (env.sig) {
+        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`)
+    }
+
+    const code = `${data.output}\nconst result = { ${properties.join(', ')} }; result`;
+
+    // I'm aware that node's vms are very easy to escape and I
+    // probably shouldn't use it here to run arbitrary code
+    // fetched from Google - but I kinda trust them
+    // also no idea if im using this correctly
+    return vm.runInNewContext(code);
+}
+
+const cloneInnertube = async (customFetch, useSession) => {
+    Platform.shim.eval = youtubeEval;
+>>>>>>> e4787103 (api: update youtube.js)
     const shouldRefreshPlayer = globalThis.FORCE_RESET_INNERTUBE_PLAYER || lastRefreshedAt + PLAYER_REFRESH_PERIOD < new Date();
 
     const rawCookie = getCookie('youtube');
