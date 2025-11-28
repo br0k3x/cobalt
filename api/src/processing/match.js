@@ -141,7 +141,10 @@ export default async function match({ host, patternMatch, params, authType, retr
                     youtubeHLS,
                     subtitleLang,
                     alwaysProxy: params.alwaysProxy,
+<<<<<<< HEAD
                     requestIP,
+=======
+>>>>>>> aaceb727 (api/youtube: add support for posts)
                 }
 
                 if (url.hostname === "music.youtube.com" || isAudioOnly) {
