@@ -127,6 +127,7 @@ const youtubeEval = async (data, env) => {
     return vm.runInNewContext(code);
 }
 
+let encryptedHostFlags = "";
 const cloneInnertube = async (customFetch, useSession) => {
     Platform.shim.eval = youtubeEval;
 >>>>>>> e4787103 (api: update youtube.js)
@@ -193,11 +194,27 @@ const cloneInnertube = async (customFetch, useSession) => {
 
         innertubeRequestIp = requestIP;
         lastRefreshedAt = +new Date();
+<<<<<<< HEAD
         
         if (!useSession && env.customInnertubeClient === "WEB_EMBEDDED") {
             // WEB_EMBEDDED sometimes needs a property named `encryptedHostFlags`, which you
             // can seemingly only get by extracting it out of a player response
             await fetchEncryptedHostFlags(customFetch);
+=======
+
+        const embedResp = await customFetch("https://youtube.com/embed/QfKmnuHMpYo", {
+            headers: {
+                "Referer": "https://www.google.com"
+            }
+        })
+            .then(r => r.text());
+        
+        const hostFlagsMatch = /encryptedHostFlags":"(.+?)"/.exec(embedResp);
+        if (hostFlagsMatch?.length > 1) {
+            encryptedHostFlags = hostFlagsMatch[1];
+        } else {
+            console.error(new Date(), "Could not fetch encryptedHostFlags, no match!");
+>>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
         }
     }
 
@@ -423,12 +440,17 @@ export default async function (o) {
 
     let info;
     try {
+<<<<<<< HEAD
         const args = {
+=======
+        info = await yt.actions.execute("/player", {
+>>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
             videoId: o.id,
             client: innertubeClient,
             parse: true,
             playbackContext: {
                 contentPlaybackContext: {
+<<<<<<< HEAD
                     vis: 0,
                     splay: false,
                     lactMilliseconds: '-1',
@@ -448,6 +470,13 @@ export default async function (o) {
         }
 
         info = await yt.actions.execute("/player", args);
+=======
+                    encryptedHostFlags
+                }
+            }
+        })
+        // info = await yt.getBasicInfo(o.id, { client: innertubeClient });
+>>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
     } catch (e) {
         if (e?.info) {
             let errorInfo;
