@@ -28,6 +28,7 @@ const initDOM = () => {
 	}
 };
 
+<<<<<<< HEAD
 const fetchChallengeFromInnertube = async (yt) => {
 	const attestChallenge = await yt.getAttestationChallenge("ENGAGEMENT_TYPE_UNBOUND");
 	const challengeJsUrl = new URL(attestChallenge.bg_challenge.interpreter_url.private_do_not_access_or_else_trusted_resource_url_wrapped_value, "https://a");
@@ -41,6 +42,14 @@ const fetchChallengeFromInnertube = async (yt) => {
 
 const fetchChallengeFromWaa = async (fetch) => {
 	const attestChallenge = await fetch(buildURL("Create", true), {
+=======
+export const getMinter = async ({ fetch }) => {
+	if (!domInitialized) {
+		initDOM();
+	}
+
+	const challenge = await fetch(buildURL("Create", true), {
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
 		method: "POST",
 		headers: {
 			"content-type": "application/json+protobuf",
@@ -50,6 +59,7 @@ const fetchChallengeFromWaa = async (fetch) => {
 		body: JSON.stringify([ YOUTUBE_KEY ])
 	}).then(r => r.json());
 
+<<<<<<< HEAD
 	const bgChallenge = BG.Challenge.parseChallengeData(attestChallenge);
 
 	return {
@@ -74,6 +84,14 @@ export const getMinter = async ({ yt, fetch }) => {
 	const bg = await BG.BotGuardClient.create({
 		program: challenge.program,
 		globalName: challenge.globalName,
+=======
+	const bgChallenge = BG.Challenge.parseChallengeData(challenge);
+	new Function(bgChallenge.interpreterJavascript.privateDoNotAccessOrElseSafeScriptWrappedValue)();
+
+	const bg = await BG.BotGuardClient.create({
+		program: bgChallenge.program,
+		globalName: bgChallenge.globalName,
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
 		globalObj: globalThis,
 		fetch,
 	});

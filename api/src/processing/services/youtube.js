@@ -19,6 +19,7 @@ import { getCookie } from "../cookie/manager.js";
 import { createStream } from "../../stream/manage.js";
 import { getYouTubeSession } from "../helpers/youtube-session.js";
 
+<<<<<<< HEAD
 // https://github.com/LuanRT/YouTube.js/pull/1052
 Platform.shim.eval = async (data) => {
     const isolate = new ivm.Isolate();
@@ -36,6 +37,12 @@ const PLAYER_REFRESH_PERIOD = 1000 * 60 * 15; // ms
 const MINTER_REFRESH_PERIOD = 1000 * 60 * 60 * 6;
 
 let innertube, lastRefreshedAt, innertubeRequestIp;
+=======
+const PLAYER_REFRESH_PERIOD = 1000 * 60 * 15; // ms
+const MINTER_REFRESH_PERIOD = 1000 * 60 * 60 * 6;
+
+let innertube, lastRefreshedAt;
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
 let poMinter, poMinterLastRefresh = 0;
 
 const codecList = {
@@ -127,10 +134,37 @@ const youtubeEval = async (data, env) => {
     return vm.runInNewContext(code);
 }
 
+/**
+ * @type {typeof import("../helpers/youtube-po.js")}
+ */
+let poModule;
+
 let encryptedHostFlags = "";
 const cloneInnertube = async (customFetch, useSession) => {
     Platform.shim.eval = youtubeEval;
+<<<<<<< HEAD
 >>>>>>> e4787103 (api: update youtube.js)
+=======
+
+    if (env.ytGeneratePoTokens) {
+        if (!poModule) {
+            // Importing this helper also needs BGUtils and JSDOM,
+            // I'm importing them dynamically here so a) startup
+            // doesn't get delayed and b) so I can mark these
+            // dependencies as optional
+            poModule = await import("../helpers/youtube-po.js");
+        }
+
+        if (!poMinter || +new Date() > poMinterLastRefresh + MINTER_REFRESH_PERIOD) {
+            poMinter?.then(minter => minter.remove()).catch(() => {});
+            poMinter = poModule.getMinter({ fetch: customFetch });
+            poMinterLastRefresh = +new Date();
+        }
+    }
+
+    
+
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
     const shouldRefreshPlayer = globalThis.FORCE_RESET_INNERTUBE_PLAYER || lastRefreshedAt + PLAYER_REFRESH_PERIOD < new Date();
 
     const rawCookie = getCookie('youtube');
@@ -174,6 +208,7 @@ const cloneInnertube = async (customFetch, useSession) => {
         });
 
         if (env.ytGeneratePoTokens) {
+<<<<<<< HEAD
             if (!poModule) {
                 // Importing this helper also needs BGUtils and JSDOM,
                 // I'm importing them dynamically here so a) startup
@@ -188,11 +223,16 @@ const cloneInnertube = async (customFetch, useSession) => {
                 poMinterLastRefresh = +new Date();
             }
 
+=======
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
             const { minter } = await poMinter;
             innertube.session.po_token = await minter.mintAsWebsafeString(innertube.session.context.client.visitorData);
         }
 
+<<<<<<< HEAD
         innertubeRequestIp = requestIP;
+=======
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
         lastRefreshedAt = +new Date();
 <<<<<<< HEAD
         
@@ -207,7 +247,7 @@ const cloneInnertube = async (customFetch, useSession) => {
                 "Referer": "https://www.google.com"
             }
         })
-            .then(r => r.text());
+        .then(r => r.text());
         
         const hostFlagsMatch = /encryptedHostFlags":"(.+?)"/.exec(embedResp);
         if (hostFlagsMatch?.length > 1) {
@@ -456,6 +496,9 @@ export default async function (o) {
                     lactMilliseconds: '-1',
                     signatureTimestamp: yt.session.player?.signature_timestamp,
                 }
+            },
+            serviceIntegrityDimensions: {
+                poToken: yt.session.po_token
             }
         };
 

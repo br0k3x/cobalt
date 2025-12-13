@@ -136,7 +136,11 @@ export const loadEnvs = (env = process.env) => {
         ytGeneratePoTokens: env.YOUTUBE_GENERATE_PO_TOKENS !== "0",
 =======
         ytPlayerId: env.YOUTUBE_PLAYER_ID,
+<<<<<<< HEAD
 >>>>>>> 0aa37b67 (api/env: add YOUTUBE_PLAYER_ID to override the player id)
+=======
+        ytGeneratePoTokens: env.YOUTUBE_GENERATE_PO_TOKENS !== "0",
+>>>>>>> 9bf49a3b (api/youtube: add po tokens)
 
         // "never" | "session" | "always"
         forceLocalProcessing: env.FORCE_LOCAL_PROCESSING ?? "never",
