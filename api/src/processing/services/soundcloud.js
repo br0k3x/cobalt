@@ -26,10 +26,10 @@ async function findClientID() {
             }
 
             const scrf = await fetch(url).then(r => r.text()).catch(() => {});
-            const id = scrf.match(/\("client_id=[A-Za-z0-9]{32}"\)/);
+            const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
 
-            if (id && typeof id[0] === 'string') {
-                clientid = id[0].match(/[A-Za-z0-9]{32}/)[0];
+            if (id && id.length >= 2) {
+                clientid = id[1];
                 break;
             }
         }
