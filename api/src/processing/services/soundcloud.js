@@ -16,6 +16,7 @@ async function findClientID() {
         }
 
         let clientid = sc.match(/"hydratable"\s*:\s*"apiClient"\s*,\s*"data"\s*:\s*\{\s*"id"\s*:\s*"([^"]+)"/)?.[1];
+<<<<<<< HEAD
         if (!clientid) {
             const scripts = sc.matchAll(/<script.+src="(.+)">/g);
 
@@ -30,10 +31,26 @@ async function findClientID() {
                 const scrf = await fetch(url).then(r => r.text()).catch(() => {});
                 const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
 
+=======
+        if (!clientid) { // if its not in the html, loop through scripts until we find it
+            const scripts = sc.matchAll(/<script.+src="(.+)">/g);
+    
+            for (let script of scripts) {
+                const url = script[1];
+    
+                if (!url?.startsWith('https://a-v2.sndcdn.com/')) {
+                    return;
+                }
+    
+                const scrf = await fetch(url).then(r => r.text()).catch(() => {});
+                const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
+    
+>>>>>>> 8549b7ee (api/soundcloud: use clientId from html if possible)
                 if (id && id.length >= 2) {
                     clientid = id[1];
                     break;
                 }
+<<<<<<< HEAD
 =======
             const scrf = await fetch(url).then(r => r.text()).catch(() => {});
             const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
@@ -45,6 +62,14 @@ async function findClientID() {
             }
         }
 
+=======
+            }
+        }
+
+        // if we still don't have it.. tough luck
+        if (!clientid) return;
+
+>>>>>>> 8549b7ee (api/soundcloud: use clientId from html if possible)
         cachedID.version = scVersion;
         cachedID.id = clientid;
 
