@@ -26,6 +26,7 @@ async function findClientID() {
                     return;
                 }
 
+<<<<<<< HEAD
                 const scrf = await fetch(url).then(r => r.text()).catch(() => {});
                 const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
 
@@ -33,6 +34,14 @@ async function findClientID() {
                     clientid = id[1];
                     break;
                 }
+=======
+            const scrf = await fetch(url).then(r => r.text()).catch(() => {});
+            const id = scrf.match(/,client_id:"([A-Za-z0-9]{32})",/);
+
+            if (id && id.length >= 2) {
+                clientid = id[1];
+                break;
+>>>>>>> eadc1f54 (api/soundcloud: change regex for now)
             }
         }
 
