@@ -134,12 +134,29 @@ const youtubeEval = async (data, env) => {
     return vm.runInNewContext(code);
 }
 
+
+let encryptedHostFlags = "";
+const fetchEncryptedHostFlags = async (fetch) => {
+    const embedResp = await fetch("https://youtube.com/embed/QfKmnuHMpYo", {
+        headers: {
+            "Referer": "https://www.google.com"
+        }
+    })
+    .then(r => r.text());
+    
+    const hostFlagsMatch = /encryptedHostFlags":"(.+?)"/.exec(embedResp);
+    if (hostFlagsMatch?.length > 1) {
+        encryptedHostFlags = hostFlagsMatch[1];
+    } else {
+        console.error(new Date(), "Could not fetch encryptedHostFlags, no match!");
+    }
+}
+
 /**
  * @type {typeof import("../helpers/youtube-po.js")}
  */
 let poModule;
 
-let encryptedHostFlags = "";
 const cloneInnertube = async (customFetch, useSession) => {
     Platform.shim.eval = youtubeEval;
 <<<<<<< HEAD
@@ -162,9 +179,12 @@ const cloneInnertube = async (customFetch, useSession) => {
         }
     }
 
+<<<<<<< HEAD
     
 
 >>>>>>> 9bf49a3b (api/youtube: add po tokens)
+=======
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
     const shouldRefreshPlayer = globalThis.FORCE_RESET_INNERTUBE_PLAYER || lastRefreshedAt + PLAYER_REFRESH_PERIOD < new Date();
 
     const rawCookie = getCookie('youtube');
@@ -235,6 +255,7 @@ const cloneInnertube = async (customFetch, useSession) => {
 >>>>>>> 9bf49a3b (api/youtube: add po tokens)
         lastRefreshedAt = +new Date();
 <<<<<<< HEAD
+<<<<<<< HEAD
         
         if (!useSession && env.customInnertubeClient === "WEB_EMBEDDED") {
             // WEB_EMBEDDED sometimes needs a property named `encryptedHostFlags`, which you
@@ -255,6 +276,13 @@ const cloneInnertube = async (customFetch, useSession) => {
         } else {
             console.error(new Date(), "Could not fetch encryptedHostFlags, no match!");
 >>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
+=======
+        
+        if (!useSession && env.customInnertubeClient === "WEB_EMBEDDED") {
+            // WEB_EMBEDDED sometimes needs a property named `encryptedHostFlags`, which you
+            // can seemingly only get by extracting it out of a player response
+            await fetchEncryptedHostFlags(customFetch);
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
         }
     }
 
@@ -481,24 +509,28 @@ export default async function (o) {
     let info;
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const args = {
 =======
         info = await yt.actions.execute("/player", {
 >>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
+=======
+        const args = {
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
             videoId: o.id,
             client: innertubeClient,
             parse: true,
             playbackContext: {
                 contentPlaybackContext: {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
                     vis: 0,
                     splay: false,
                     lactMilliseconds: '-1',
                     signatureTimestamp: yt.session.player?.signature_timestamp,
                 }
-            },
-            serviceIntegrityDimensions: {
-                poToken: yt.session.po_token
             }
         };
 
@@ -513,6 +545,7 @@ export default async function (o) {
         }
 
         info = await yt.actions.execute("/player", args);
+<<<<<<< HEAD
 =======
                     encryptedHostFlags
                 }
@@ -520,6 +553,8 @@ export default async function (o) {
         })
         // info = await yt.getBasicInfo(o.id, { client: innertubeClient });
 >>>>>>> 9ada1cd4 (api/youtube: quick hack: fetch encryptedHostFlags)
+=======
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
     } catch (e) {
         if (e?.info) {
             let errorInfo;
@@ -549,6 +584,9 @@ export default async function (o) {
         case "LOGIN_REQUIRED":
             if (playability.reason.endsWith("bot")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 05b275a7 (api/youtube: cleanup some client-specific logic)
                 lastRefreshedAt = +new Date(0);
                 return { error: "youtube.login", retry: true }
 =======
