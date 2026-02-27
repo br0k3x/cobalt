@@ -1,6 +1,6 @@
-import { Client } from "youtubei";
-import { Soundcloud } from "soundcloud.ts";
 import type { RequestHandler } from "@sveltejs/kit";
+import type { Client } from "youtubei";
+import type { Soundcloud } from "soundcloud.ts";
 import { env } from "$env/dynamic/private";
 
 export const prerender = false;
@@ -8,13 +8,19 @@ export const prerender = false;
 let youtube: Client | null = null;
 let soundcloud: Soundcloud | null = null;
 
-function getYoutubeClient() {
-  if (!youtube) youtube = new Client();
+async function getYoutubeClient() {
+  if (!youtube) {
+    const { Client } = await import("youtubei");
+    youtube = new Client();
+  }
   return youtube;
 }
 
-function getSoundcloudClient() {
-  if (!soundcloud) soundcloud = new Soundcloud();
+async function getSoundcloudClient() {
+  if (!soundcloud) {
+    const { Soundcloud } = await import("soundcloud.ts");
+    soundcloud = new Soundcloud();
+  }
   return soundcloud;
 }
 
@@ -59,7 +65,8 @@ function isSoundcloudPlaylist(urlStr: string): boolean {
 }
 
 async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
-  const playlist = await getYoutubeClient().getPlaylist(playlistId);
+  const client = await getYoutubeClient();
+  const playlist = await client.getPlaylist(playlistId);
   if (!playlist) {
     return errorResponse(errorMessages.invalidLink, 400);
   }
@@ -85,7 +92,8 @@ async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
 async function getSoundcloudTracks(
   playlistUrl: string,
 ): Promise<VideoListResult> {
-  const playlist = await getSoundcloudClient().playlists.getAlt(playlistUrl);
+  const client = await getSoundcloudClient();
+  const playlist = await client.playlists.getAlt(playlistUrl);
   if (!playlist) {
     return errorResponse(errorMessages.invalidLink, 400);
   }
