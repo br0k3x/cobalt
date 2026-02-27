@@ -10,10 +10,19 @@ RUN corepack enable
 RUN apk add --no-cache python3 alpine-sdk
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --prod --frozen-lockfile
+    pnpm install --frozen-lockfile
 
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
-RUN pnpm deploy --filter=@imput/cobalt-web --prod /prod/web
+RUN pnpm deploy --filter=@imput/cobalt-web /prod/web
+
+# Build the web app
+FROM base AS web-builder
+WORKDIR /app
+
+COPY --from=build /prod/web /app
+
+RUN corepack enable && corepack install -g pnpm@9.6.0
+RUN pnpm run build
 
 FROM base AS api
 WORKDIR /app
@@ -28,14 +37,14 @@ CMD [ "node", "src/cobalt" ]
 
 # Web frontend
 
-FROM base AS web
+FROM node:24-alpine AS web
 WORKDIR /app
 
-RUN corepack enable && corepack install -g pnpm@9.6.0
+RUN npm install -g http-server
 
-COPY --from=build --chown=node:node /prod/web /app
+COPY --from=web-builder /app/build /app
 
 USER node
 EXPOSE 3000
 
-CMD ["pnpm", "run", "preview", "--host"]
+CMD ["http-server", "/app", "-p", "3000"]
