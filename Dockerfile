@@ -31,6 +31,8 @@ CMD [ "node", "src/cobalt" ]
 FROM base AS web
 WORKDIR /app
 
+RUN corepack enable
+
 COPY --from=build --chown=node:node /prod/web /app
 
 USER node
