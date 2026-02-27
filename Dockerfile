@@ -1,6 +1,8 @@
 FROM node:24-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ARG WEB_DEFAULT_API
+ARG WEB_HOST
 
 FROM base AS build
 WORKDIR /app
@@ -18,6 +20,12 @@ RUN pnpm deploy --filter=@imput/cobalt-web /prod/web
 # Build the web app
 FROM base AS web-builder
 WORKDIR /app
+
+ARG WEB_DEFAULT_API
+ARG WEB_HOST
+
+ENV WEB_DEFAULT_API=$WEB_DEFAULT_API
+ENV WEB_HOST=$WEB_HOST
 
 COPY --from=build /prod/web /app
 
