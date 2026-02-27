@@ -2,10 +2,14 @@ name: Build staging Docker image
 
 on:
   push:
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # Change these two environment variables
+  WEB_DEFAULT_API: "https://cobalt-a.br0k3.me"
+  WEB_HOST: "https://cobalt.br0k3.me"
 
 jobs:
   build-and-push-image:
@@ -57,5 +61,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            WEB_DEFAULT_API=${{ env.WEB_DEFAULT_API }}
+            WEB_HOST=${{ env.WEB_HOST }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
