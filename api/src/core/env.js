@@ -47,6 +47,7 @@ export const loadEnvs = (env = process.env) => {
             return e;
         }
     }));
+    const playlistServices = new Set(Object.keys(services).filter(e => services[e].playlistSupport === true));
 
     // we need to copy the proxy envs (HTTP_PROXY, HTTPS_PROXY)
     // back into process.env, so that EnvHttpProxyAgent can pick
@@ -123,6 +124,7 @@ export const loadEnvs = (env = process.env) => {
 
         allServices,
         enabledServices,
+        playlistServices,
 
         useSystemFFmpeg: env.USE_SYSTEM_FFMPEG === "1",
 

@@ -19,7 +19,7 @@
 
         if ($cachedInfo) {
             loaded = true;
-            services = $cachedInfo.info.cobalt.playlistServices;
+            services = ($cachedInfo.info.cobalt as { playlistServices?: string[] }).playlistServices ?? [];
         }
     };
 

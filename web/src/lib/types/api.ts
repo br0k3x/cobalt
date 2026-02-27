@@ -100,7 +100,8 @@ export type CobaltServerInfo = {
         url: string,
         startTime: string,
         turnstileSitekey?: string,
-        services: string[]
+        services: string[],
+        playlistServices: string[],
     },
     git: {
         branch: string,

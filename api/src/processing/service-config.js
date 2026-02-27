@@ -13,15 +13,18 @@ export const services = {
             "_tv/video/:tvId"
         ],
         subdomains: ["m"],
+        playlistSupport: false
     },
     bsky: {
         patterns: [
             "profile/:user/post/:post"
         ],
         tld: "app",
+        playlistSupport: false
     },
     dailymotion: {
         patterns: ["video/:id"],
+        playlistSupport: false
     },
     facebook: {
         patterns: [
@@ -33,6 +36,7 @@ export const services = {
         ],
         subdomains: ["web", "m"],
         altDomains: ["fb.watch"],
+        playlistSupport: false
     },
     instagram: {
         patterns: [
@@ -57,9 +61,11 @@ export const services = {
             ":username/reel/:postId",
         ],
         altDomains: ["ddinstagram.com"],
+        playlistSupport: false
     },
     loom: {
         patterns: ["share/:id", "embed/:id"],
+        playlistSupport: false
     },
     ok: {
         patterns: [
@@ -67,6 +73,7 @@ export const services = {
             "videoembed/:id"
         ],
         tld: "ru",
+        playlistSupport: false
     },
     pinterest: {
         patterns: [
@@ -74,12 +81,14 @@ export const services = {
             "pin/:id/:garbage",
             "url_shortener/:shortLink"
         ],
+        playlistSupport: false
     },
     newgrounds: {
         patterns: [
             "portal/view/:id",
             "audio/listen/:audioId",
-        ]
+        ],
+        playlistSupport: false
     },
     reddit: {
         patterns: [
@@ -102,6 +111,7 @@ export const services = {
             "video/:shortId",
         ],
         subdomains: "*",
+        playlistSupport: false
     },
     rutube: {
         patterns: [
@@ -113,6 +123,7 @@ export const services = {
             "video/private/:id"
         ],
         tld: "ru",
+        playlistSupport: false
     },
     snapchat: {
         patterns: [
@@ -126,6 +137,7 @@ export const services = {
             "o/:spotlightId",
         ],
         subdomains: ["t", "story"],
+        playlistSupport: false
     },
     soundcloud: {
         patterns: [
@@ -134,6 +146,7 @@ export const services = {
             ":shortLink"
         ],
         subdomains: ["on", "m"],
+        playlistSupport: true
     },
     streamable: {
         patterns: [
@@ -142,6 +155,7 @@ export const services = {
             "e/:id",
             "s/:id"
         ],
+        playlistSupport: false
     },
     tiktok: {
         patterns: [
@@ -153,6 +167,7 @@ export const services = {
             "v/:postId.html"
         ],
         subdomains: ["vt", "vm", "m", "t"],
+        playlistSupport: false
     },
     tumblr: {
         patterns: [
@@ -162,11 +177,13 @@ export const services = {
             ":user/:id/:trackingId"
         ],
         subdomains: "*",
+        playlistSupport: false
     },
     twitch: {
         patterns: [":channel/clip/:clip"],
         tld: "tv",
         subdomains: ["clips", "www", "m"],
+        playlistSupport: false
     },
     twitter: {
         patterns: [
@@ -179,6 +196,7 @@ export const services = {
         ],
         subdomains: ["mobile"],
         altDomains: ["x.com", "vxtwitter.com", "fixvx.com"],
+        playlistSupport: false
     },
     vimeo: {
         patterns: [
@@ -189,6 +207,7 @@ export const services = {
             "groups/:groupId/videos/:id"
         ],
         subdomains: ["player"],
+        playlistSupport: false
     },
     vk: {
         patterns: [
@@ -204,6 +223,7 @@ export const services = {
         ],
         subdomains: ["m"],
         altDomains: ["vkvideo.ru", "vk.ru"],
+        playlistSupport: false
     },
     xiaohongshu: {
         patterns: [
@@ -212,6 +232,7 @@ export const services = {
             ":shareType/:shareId",
         ],
         altDomains: ["xhslink.com"],
+        playlistSupport: false
     },
     youtube: {
         patterns: [
@@ -222,6 +243,7 @@ export const services = {
             "post/:postId",
         ],
         subdomains: ["music", "m"],
+        playlistSupport: true
     }
 }
 

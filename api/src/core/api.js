@@ -67,6 +67,9 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
                 services: [...env.enabledServices].map(e => {
                     return friendlyServiceName(e);
                 }),
+                playlistServices: [...env.playlistServices].map(e => {
+                    return friendlyServiceName(e);
+                })
             },
             git,
         });
