@@ -3,12 +3,25 @@ import { Soundcloud } from "soundcloud.ts";
 import type { RequestHandler } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 
-const youtube = new Client();
-const soundcloud = new Soundcloud();
+export const prerender = false;
 
-const MAX_ITEMS = Number(env.MAX_ITEMS);
-const PLAYLIST_LIMIT =
-  Number.isFinite(MAX_ITEMS) && MAX_ITEMS > 0 ? MAX_ITEMS : 30;
+let youtube: Client | null = null;
+let soundcloud: Soundcloud | null = null;
+
+function getYoutubeClient() {
+  if (!youtube) youtube = new Client();
+  return youtube;
+}
+
+function getSoundcloudClient() {
+  if (!soundcloud) soundcloud = new Soundcloud();
+  return soundcloud;
+}
+
+function getPlaylistLimit() {
+  const maxItems = Number(env.MAX_ITEMS);
+  return Number.isFinite(maxItems) && maxItems > 0 ? maxItems : 30;
+}
 
 const errorMessages = {
   noLink: "you forgot about the link!",
@@ -46,7 +59,7 @@ function isSoundcloudPlaylist(urlStr: string): boolean {
 }
 
 async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
-  const playlist = await youtube.getPlaylist(playlistId);
+  const playlist = await getYoutubeClient().getPlaylist(playlistId);
   if (!playlist) {
     return errorResponse(errorMessages.invalidLink, 400);
   }
@@ -56,9 +69,10 @@ async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
     await videos.next(0);
   }
 
-  if (playlist.videoCount > PLAYLIST_LIMIT) {
+  const playlistLimit = getPlaylistLimit();
+  if (playlist.videoCount > playlistLimit) {
     return errorResponse(
-      `this playlist has ${playlist.videoCount} videos, the limit is ${PLAYLIST_LIMIT}`,
+      `this playlist has ${playlist.videoCount} videos, the limit is ${playlistLimit}`,
       400,
     );
   }
@@ -71,14 +85,15 @@ async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
 async function getSoundcloudTracks(
   playlistUrl: string,
 ): Promise<VideoListResult> {
-  const playlist = await soundcloud.playlists.getAlt(playlistUrl);
+  const playlist = await getSoundcloudClient().playlists.getAlt(playlistUrl);
   if (!playlist) {
     return errorResponse(errorMessages.invalidLink, 400);
   }
 
-  if (playlist.tracks.length > PLAYLIST_LIMIT) {
+  const playlistLimit = getPlaylistLimit();
+  if (playlist.tracks.length > playlistLimit) {
     return errorResponse(
-      `this playlist has ${playlist.tracks.length} tracks, the limit is ${PLAYLIST_LIMIT}`,
+      `this playlist has ${playlist.tracks.length} tracks, the limit is ${playlistLimit}`,
       400,
     );
   }
