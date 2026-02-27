@@ -17,15 +17,18 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
 =======
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
+<<<<<<< HEAD
 RUN pnpm deploy --filter=web --prod /prod/web
 >>>>>>> 96dfbdf0 (docker: Add web frontend to Dockerfile)
+=======
+RUN pnpm deploy --filter=@br0k3x/cobalt --prod /prod/web
+>>>>>>> a4274244 (docker: Fix (i hope))
 
 FROM base AS api
 WORKDIR /app
 
 COPY --from=build --chown=node:node /prod/api /app
 COPY --from=build --chown=node:node /app/.git /app/.git
-
 
 USER node
 
