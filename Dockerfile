@@ -28,6 +28,7 @@ ENV WEB_DEFAULT_API=$WEB_DEFAULT_API
 ENV WEB_HOST=$WEB_HOST
 
 COPY --from=build /prod/web /app
+COPY --from=build /app/.git /app/.git
 
 RUN corepack enable && corepack install -g pnpm@9.6.0
 RUN pnpm run build
@@ -51,6 +52,7 @@ WORKDIR /app
 RUN npm install -g http-server
 
 COPY --from=web-builder /app/build /app
+
 
 USER node
 EXPOSE 3000
