@@ -64,6 +64,9 @@
         "vite": "^5.4.4",
         "soundcloud.ts": "^0.7.1",
         "youtubei": "^1.8.4"
+<<<<<<< HEAD
 >>>>>>> c83ad845 (actions: fix for web testing)
+=======
+>>>>>>> b035f676 (web: update package)
     }
 }
