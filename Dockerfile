@@ -31,7 +31,7 @@ CMD [ "node", "src/cobalt" ]
 FROM base AS web
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack install -g pnpm@9.6.0
 
 COPY --from=build --chown=node:node /prod/web /app
 
