@@ -2,6 +2,7 @@ import env from "$lib/env";
 import API from "$lib/api/api";
 import settings from "$lib/state/settings";
 import lazySettingGetter from "$lib/settings/lazy-get";
+import { currentApiURL } from "$lib/api/api-url";
 
 import { get } from "svelte/store";
 import { t } from "$lib/i18n/translations";
@@ -38,7 +39,7 @@ const isPlaylistURL = (url: string): boolean => {
 
 const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null> => {
     try {
-        const apiUrl = get(settings).processing.defaultAPI;
+        const apiUrl = currentApiURL();
         const response = await fetch(`${apiUrl}/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
         if (!response.ok) {
             return null;
