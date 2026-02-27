@@ -2,6 +2,7 @@ import env from "$lib/env";
 import API from "$lib/api/api";
 import settings from "$lib/state/settings";
 import lazySettingGetter from "$lib/settings/lazy-get";
+import { currentApiURL } from "$lib/api/api-url";
 
 import { get } from "svelte/store";
 import { t } from "$lib/i18n/translations";
@@ -38,6 +39,7 @@ const isPlaylistURL = (url: string): boolean => {
 
 const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null> => {
     try {
+<<<<<<< HEAD
         // fix duplicated URLs (e.g., "https://...https://..." -> "https://...")
         const urlMatch = playlistUrl.match(/^(https?:\/\/.+?)(https?:\/\/)/i);
         if (urlMatch) {
@@ -45,6 +47,9 @@ const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null>
         }
 
         const apiUrl = get(settings).processing.defaultAPI;
+=======
+        const apiUrl = currentApiURL();
+>>>>>>> 939aa870 (Fix playlist endpoint: use currentApiURL() instead of missing settings.processing.defaultAPI)
         const response = await fetch(`${apiUrl}/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
         if (!response.ok) {
             return null;
