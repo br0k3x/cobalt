@@ -19,6 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 RUN pnpm deploy --filter=web --prod /prod/web
 >>>>>>> 96dfbdf0 (docker: Add web frontend to Dockerfile)
 =======
@@ -27,6 +28,18 @@ RUN pnpm deploy --filter=@br0k3x/cobalt --prod /prod/web
 =======
 RUN pnpm deploy --filter=@imput/cobalt-web --prod /prod/web
 >>>>>>> 1862fd9b (Docker: Fix v2 (hopes again))
+=======
+RUN pnpm deploy --filter=@imput/cobalt-web /prod/web
+
+# Build the web app
+FROM base AS web-builder
+WORKDIR /app
+
+COPY --from=build /prod/web /app
+
+RUN corepack enable && corepack install -g pnpm@9.6.0
+RUN pnpm run build
+>>>>>>> e77b0355 (docker: fix v4)
 
 FROM base AS api
 WORKDIR /app
@@ -41,14 +54,14 @@ CMD [ "node", "src/cobalt" ]
 
 # Web frontend
 
-FROM base AS web
+FROM node:24-alpine AS web
 WORKDIR /app
 
-RUN corepack enable && corepack install -g pnpm@9.6.0
+RUN npm install -g http-server
 
-COPY --from=build --chown=node:node /prod/web /app
+COPY --from=web-builder /app/build /app
 
 USER node
 EXPOSE 3000
 
-CMD ["pnpm", "run", "preview", "--host"]
+CMD ["http-server", "/app", "-p", "3000"]
