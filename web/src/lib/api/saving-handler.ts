@@ -24,13 +24,14 @@ const isPlaylistURL = (url: string): boolean => {
         const urlObj = new URL(url);
         // YouTube playlist — only dedicated /playlist URLs,
         // not video-within-playlist URLs like /watch?v=…&list=…
-        if (urlObj.hostname.includes('youtube.com')
+        if ((urlObj.hostname === 'youtube.com' || urlObj.hostname.endsWith('.youtube.com'))
             && urlObj.pathname === '/playlist'
             && urlObj.searchParams.get('list')) {
             return true;
         }
         // SoundCloud set/playlist
-        if (urlObj.hostname.includes('soundcloud.com') && url.includes('/sets/')) {
+        if ((urlObj.hostname === 'soundcloud.com' || urlObj.hostname.endsWith('.soundcloud.com'))
+            && urlObj.pathname.includes('/sets/')) {
             return true;
         }
         return false;
