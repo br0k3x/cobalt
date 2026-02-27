@@ -13,6 +13,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+    
+    strategy:
+      matrix:
+        target: [api, web]
 
     steps:
       - name: Checkout repository
@@ -36,17 +40,19 @@ jobs:
             echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
             echo "version=$version" >> $GITHUB_OUTPUT
             echo "major_version=$(echo "$version" | cut -d. -f1)" >> $GITHUB_OUTPUT
+      
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          tags: type=raw,value=staging
+          tags: type=raw,value=staging-${{ matrix.target }}
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
+          target: ${{ matrix.target }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
