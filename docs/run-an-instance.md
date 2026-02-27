@@ -8,6 +8,11 @@ if you need help with installing docker, you can find more information here:
 - [how to install docker](https://docs.docker.com/engine/install/)
 - [how to install docker compose](https://docs.docker.com/compose/install/)
 
+## before doing any of these steps:
+1. clone this repository
+2. enable github actions/workflow
+3. edit the workflow file and change the two environment variables
+
 ## how to run a cobalt docker package:
 1. create a folder for cobalt config file, something like this:
     ```sh
@@ -40,7 +45,7 @@ requirements:
 - git
 - pnpm
 
-1. clone the repo: `git clone https://github.com/imputnet/cobalt`.
+1. clone the repo: `git clone https://github.com/br0k3x/cobalt`.
 2. go to api directory: `cd cobalt/api`.
 3. install dependencies: `pnpm install`.
 4. create `.env` file in the same directory.
