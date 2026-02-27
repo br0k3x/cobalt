@@ -38,7 +38,8 @@ const isPlaylistURL = (url: string): boolean => {
 
 const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null> => {
     try {
-        const response = await fetch(`/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
+        const apiUrl = get(settings).processing.defaultAPI;
+        const response = await fetch(`${apiUrl}/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
         if (!response.ok) {
             return null;
         }

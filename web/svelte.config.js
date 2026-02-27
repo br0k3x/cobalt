@@ -1,25 +1,10 @@
 import "dotenv/config";
-import adapterStatic from "@sveltejs/adapter-static";
-import adapterNode from "@sveltejs/adapter-node";
+import adapter from "@sveltejs/adapter-static";
 
 import { mdsvex } from "mdsvex";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { sveltePreprocess } from "svelte-preprocess";
-
-const useNodeAdapter = process.env.WEB_ADAPTER === "node";
-
-const staticAdapter = adapterStatic({
-    pages: 'build',
-    assets: 'build',
-    fallback: '404.html',
-    precompress: false,
-    strict: true
-});
-
-const nodeAdapter = adapterNode({
-    out: 'build'
-});
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -54,7 +39,15 @@ const config = {
         })
     ],
     kit: {
-        adapter: useNodeAdapter ? nodeAdapter : staticAdapter,
+        adapter: adapter({
+            // default options are shown. On some platforms
+            // these options are set automatically — see below
+            pages: 'build',
+            assets: 'build',
+            fallback: '404.html',
+            precompress: false,
+            strict: true
+        }),
         csp: {
             mode: "hash",
             directives: {

@@ -23,10 +23,6 @@
         "url": "https://github.com/imputnet/cobalt/issues"
     },
     "homepage": "https://cobalt.tools/",
-    "dependencies": {
-        "soundcloud.ts": "^0.7.1",
-        "youtubei": "^1.8.4"
-    },
     "devDependencies": {
         "@eslint/js": "^9.5.0",
         "@fontsource/ibm-plex-mono": "^5.0.13",
@@ -34,7 +30,6 @@
         "@imput/libav.js-encode-cli": "6.8.7",
         "@imput/libav.js-remux-cli": "^6.8.7",
         "@imput/version-info": "workspace:^",
-        "@sveltejs/adapter-node": "^5.2.0",
         "@sveltejs/adapter-static": "^3.0.6",
         "@sveltejs/kit": "^2.20.7",
         "@sveltejs/vite-plugin-svelte": "^4.0.0",
