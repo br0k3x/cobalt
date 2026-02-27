@@ -26,7 +26,6 @@ ARG WEB_HOST
 
 ENV WEB_DEFAULT_API=$WEB_DEFAULT_API
 ENV WEB_HOST=$WEB_HOST
-ENV WEB_ADAPTER=node
 
 COPY --from=build /prod/web /app
 COPY --from=build /app/.git /app/.git
@@ -50,11 +49,12 @@ CMD [ "node", "src/cobalt" ]
 FROM node:24-alpine AS web
 WORKDIR /app
 
-ENV PORT=3000
+RUN npm install -g http-server
 
-COPY --from=web-builder --chown=node:node /app/build /app
+COPY --from=web-builder /app/build /app
+
 
 USER node
 EXPOSE 3000
 
-CMD ["node", "/app"]
+CMD ["http-server", "/app", "-p", "3000"]

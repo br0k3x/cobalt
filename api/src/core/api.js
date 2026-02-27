@@ -20,6 +20,7 @@ import { friendlyServiceName } from "../processing/service-alias.js";
 import { verifyStream } from "../stream/manage.js";
 import { createResponse, normalizeRequest, getIP } from "../processing/request.js";
 import { setupTunnelHandler } from "./itunnel.js";
+import { getPlaylistLinks } from "../processing/playlist.js";
 
 import * as APIKeys from "../security/api-keys.js";
 import * as Cookies from "../processing/cookie/manager.js";
@@ -324,6 +325,17 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
         }
 
         return stream(res, streamInfo);
+    });
+
+    app.get('/playlist/getlinks', async (req, res) => {
+        const playlistUrl = String(req.query.url || "").trim();
+        const result = await getPlaylistLinks(playlistUrl);
+
+        if (result.error) {
+            return res.status(result.status).send(result.error);
+        }
+
+        return res.status(200).json(result.urls);
     });
 
     app.get('/', (req, res) => {
