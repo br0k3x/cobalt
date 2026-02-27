@@ -22,13 +22,16 @@ type SavingHandlerArgs = {
 const isPlaylistURL = (url: string): boolean => {
     try {
         const urlObj = new URL(url);
-        // YouTube playlist
-        if ((urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) 
+        // YouTube playlist — only dedicated /playlist URLs,
+        // not video-within-playlist URLs like /watch?v=…&list=…
+        if ((urlObj.hostname === 'youtube.com' || urlObj.hostname.endsWith('.youtube.com'))
+            && urlObj.pathname === '/playlist'
             && urlObj.searchParams.get('list')) {
             return true;
         }
         // SoundCloud set/playlist
-        if (urlObj.hostname.includes('soundcloud.com') && url.includes('/sets/')) {
+        if ((urlObj.hostname === 'soundcloud.com' || urlObj.hostname.endsWith('.soundcloud.com'))
+            && urlObj.pathname.includes('/sets/')) {
             return true;
         }
         return false;
@@ -76,7 +79,7 @@ const processSingleVideo = async (
     };
 
     const response = await API.request(requestBody);
-    if (!response) return;
+    if (!response || response.status === "error") return;
 
     if (response.status === "redirect") {
         downloadFile({ url: response.url, urlType: "redirect" });
@@ -87,6 +90,8 @@ const processSingleVideo = async (
         }
     } else if (response.status === "local-processing") {
         createSavePipeline(response, requestBody);
+    } else if (response.status === "picker" && response.picker.length > 0) {
+        downloadFile({ url: response.picker[0].url });
     }
 };
 
