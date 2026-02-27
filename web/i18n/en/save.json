@@ -7,9 +7,9 @@
     "input.placeholder": "paste the link here",
     "terms.note.agreement": "by continuing, you agree to",
     "terms.note.link": "terms and ethics of use",
-    "services.title": "supported services",
-    "services.title_show": "show supported services",
-    "services.title_hide": "hide supported services",
+    "services.title": "supported services (normal)",
+    "services.title_show": "show supported services (normal)",
+    "services.title_hide": "hide supported services (normal)",
     "services.disclaimer": "support for a service does not imply affiliation, endorsement, or any form of support other than technical compatibility.",
 
     "tutorial.title": "how to save on ios?",
@@ -21,7 +21,7 @@
     "tutorial.shortcut.photos": "to photos",
     "tutorial.shortcut.files": "to files",
 
-    "label.community_instance": "community instance",
+    "label.community_instance": "community instance | normal saving",
 
     "tooltip.captcha": "cloudflare turnstile is checking if you're not a bot, please wait!"
 }

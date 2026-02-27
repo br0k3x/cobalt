@@ -51,7 +51,10 @@ async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
     return errorResponse(errorMessages.invalidLink, 400);
   }
 
-  await playlist.videos.next(0);
+  const videos = playlist.videos;
+  if ('next' in videos) {
+    await videos.next(0);
+  }
 
   if (playlist.videoCount > PLAYLIST_LIMIT) {
     return errorResponse(
@@ -60,7 +63,8 @@ async function getYouTubeVideos(playlistId: string): Promise<VideoListResult> {
     );
   }
 
-  const urls = playlist.videos.items.map((vid) => `https://youtu.be/${vid.id}`);
+  const videoItems = 'items' in videos ? videos.items : videos;
+  const urls = videoItems.map((vid: { id: string }) => `https://youtu.be/${vid.id}`);
   return urls;
 }
 
