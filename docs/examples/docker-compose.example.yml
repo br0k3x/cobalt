@@ -1,17 +1,17 @@
 services:
-    cobalt:
-        image: ghcr.io/imputnet/cobalt:11
+    cobalt-api:
+        image: ghcr.io/br0k3x/cobalt:staging-api
 
         init: true
         read_only: true
         restart: unless-stopped
-        container_name: cobalt
+        container_name: cobalt-api
 
         ports:
             - 9000:9000/tcp
             # if you use a reverse proxy (such as nginx),
             # uncomment the next line and remove the one above (9000:9000/tcp):
-            # - 127.0.0.1:9000:9000
+            # - 127.0.0.1:9010:9010
 
         environment:
             # replace https://api.url.example/ with your instance's url
@@ -29,11 +29,22 @@ services:
 
         labels:
             - com.centurylinklabs.watchtower.scope=cobalt
-
         # uncomment only if you use the COOKIE_PATH variable
         # volumes:
             # - ./cookies.json:/cookies.json
-
+    cobalt-web:
+        image: ghcr.io/br0k3x/cobalt:staging-web
+        restart: unless-stopped
+        container_name: cobalt-web
+        ports:
+            - 3000:3000/tcp
+        environment:
+            # replace https://cobalt.url.example/ with your instance's url
+            WEB_HOST: "https://cobalt.url.example/"
+        depends_on: 
+            - cobalt-api
+        labels:
+            - com.centurylinklabs.watchtower.scope=cobalt
     # watchtower updates the cobalt image automatically
     watchtower:
         image: ghcr.io/containrrr/watchtower
