@@ -1,10 +1,12 @@
 import { env } from "$env/dynamic/private";
 import { json } from "@sveltejs/kit";
 
-const COBALT_API_KEY = env.COBALT_API_KEY;
-const COBALT_API = env.COBALT_API;
+export const prerender = false;
 
 export async function POST({ request, fetch }) {
+  const COBALT_API_KEY = env.COBALT_API_KEY;
+  const COBALT_API = env.COBALT_API;
+
   if (!COBALT_API_KEY) {
     console.error("COBALT_API_KEY is not set!!");
     return json(
