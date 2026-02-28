@@ -13,10 +13,9 @@
 </svelte:head>
 
 {createDialog({
-    id: "warning-dialog",
+    id: "beta-dialog",
     meowbalt: "question",
-    icon: "warn-red",
-    title: "experimental beta feature",
+    title: "beta feature",
     bodyText: $t("playlist.label.warning"),
     dismissable: true,
     leftAligned: true,
