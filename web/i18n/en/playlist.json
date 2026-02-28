@@ -13,7 +13,7 @@
     "services.title_show": "show supported services (playlist)",
     "services.title_hide": "hide supported services (playlist)",
     "services.disclaimer": "support for a service does not imply affiliation, endorsement, or any form of support other than technical compatibility.",
-    "label.warning": "this feature is very experimental, videos or audios might be broken. use the remux tab to fix.",
+    "label.warning": "this feature is in beta, use the remux tab to fix anything broken.\nif you encounter any issues, please report them in the repository.",
 
     "tutorial.title": "how to save on ios?",
     "tutorial.intro": "to save media conveniently on ios, you'll need to use a companion siri shortcut from the share sheet.",
