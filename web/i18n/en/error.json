@@ -4,6 +4,10 @@
     "import.unknown": "couldn't load data from the file. it may be corrupted or of wrong format. here's the error i got:\n\n{{ value }}",
 
     "tunnel.probe": "couldn't test this tunnel. your browser or network configuration may be blocking access to one of cobalt servers. are you sure you don't have any weird browser extensions?",
+    "tunnel.fetch": "failed to fetch this file from the tunnel. the server connection may have been interrupted.",
+    "tunnel.404": "tunnel stream not found. it may have expired or the server restarted.",
+    "tunnel.429": "too many tunnel requests. please wait a moment and try again.",
+    "tunnel.500": "tunnel server error. please try again later.",
 
     "captcha_too_long": "cloudflare turnstile is taking too long to check if you're not a bot. try again, but if it takes way too long again, you can try: disabling weird browser extensions, changing networks, using a different browser, or checking your device for malware.",
 
