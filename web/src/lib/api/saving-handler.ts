@@ -132,6 +132,8 @@ const processPlaylistItem = async (
 
     const response = await API.request(requestBody);
     
+    console.log(`[playlist] Item ${itemId} (${videoUrl}): API response status = ${response?.status}`);
+    
     if (!response) {
         markPendingAsError(itemId, "error.api.unreachable");
         return;
@@ -149,7 +151,9 @@ const processPlaylistItem = async (
         // Fetch the file directly to ensure the tunnel stream is consumed
         // before moving to the next item (avoids race conditions)
         try {
+            console.log(`[playlist] Item ${itemId}: Tunnel URL = ${response.url}`);
             const tunnelResponse = await fetch(response.url);
+            console.log(`[playlist] Item ${itemId}: Response status = ${tunnelResponse.status}`);
             if (!tunnelResponse.ok) {
                 markPendingAsError(itemId, `error.tunnel.${tunnelResponse.status}`);
                 return;
@@ -160,6 +164,7 @@ const processPlaylistItem = async (
             downloadFile({ file });
             markPendingAsDone(itemId);
         } catch (e) {
+            console.error(`[playlist] Item ${itemId}: Fetch error`, e);
             markPendingAsError(itemId, "error.tunnel.fetch");
         }
     } else if (response.status === "local-processing") {
