@@ -4,7 +4,7 @@ import { schedule } from "$lib/task-manager/scheduler";
 import { clearFileStorage, removeFromFileStorage } from "$lib/storage/opfs";
 import { clearCurrentTasks, removeWorkerFromQueue } from "$lib/state/task-manager/current-tasks";
 
-import type { CobaltQueue, CobaltQueueItem, CobaltQueueItemRunning, UUID } from "$lib/types/queue";
+import type { CobaltQueue, CobaltQueueItem, CobaltQueueItemPending, CobaltQueueItemRunning, UUID } from "$lib/types/queue";
 
 const clearPipelineCache = (queueItem: CobaltQueueItem) => {
     if (queueItem.state === "running") {
@@ -35,13 +35,62 @@ export function addItem(item: CobaltQueueItem) {
     schedule();
 }
 
+export function addPendingItem(item: CobaltQueueItemPending) {
+    update(queueData => {
+        queueData[item.id] = item;
+        return queueData;
+    });
+
+    schedule();
+}
+
+export function markPendingAsDone(id: UUID) {
+    update(queueData => {
+        const item = queueData[id];
+        if (item && item.state === "pending") {
+            queueData[id] = {
+                id: item.id,
+                state: "done",
+                resultFile: new File([], "placeholder"),
+                pipeline: [],
+                filename: item.filename,
+                mediaType: item.mediaType,
+            };
+        }
+        return queueData;
+    });
+
+    schedule();
+}
+
+export function markPendingAsError(id: UUID, errorCode: string) {
+    update(queueData => {
+        const item = queueData[id];
+        if (item && item.state === "pending") {
+            queueData[id] = {
+                id: item.id,
+                state: "error",
+                errorCode,
+                pipeline: [],
+                canRetry: false,
+                filename: item.filename,
+                mediaType: item.mediaType,
+            };
+        }
+        return queueData;
+    });
+
+    schedule();
+}
+
 export function itemError(id: UUID, workerId: UUID, error: string) {
     update(queueData => {
-        if (queueData[id]) {
-            queueData[id] = clearPipelineCache(queueData[id]);
+        const item = queueData[id];
+        if (item && item.state !== "pending") {
+            queueData[id] = clearPipelineCache(item);
 
             queueData[id] = {
-                ...queueData[id],
+                ...item,
                 state: "error",
                 errorCode: error,
             }
@@ -55,11 +104,12 @@ export function itemError(id: UUID, workerId: UUID, error: string) {
 
 export function itemDone(id: UUID, file: File) {
     update(queueData => {
-        if (queueData[id]) {
-            queueData[id] = clearPipelineCache(queueData[id]);
+        const item = queueData[id];
+        if (item && item.state !== "pending") {
+            queueData[id] = clearPipelineCache(item);
 
             queueData[id] = {
-                ...queueData[id],
+                ...item,
                 state: "done",
                 resultFile: file,
             }
@@ -103,11 +153,15 @@ export function itemRunning(id: UUID) {
 export function removeItem(id: UUID) {
     update(queueData => {
         const item = queueData[id];
+        if (!item) return queueData;
 
-        for (const worker of item.pipeline) {
-            removeWorkerFromQueue(worker.workerId);
+        // pending items don't have a pipeline
+        if (item.state !== "pending" && item.pipeline) {
+            for (const worker of item.pipeline) {
+                removeWorkerFromQueue(worker.workerId);
+            }
+            clearPipelineCache(item);
         }
-        clearPipelineCache(item);
 
         delete queueData[id];
         return queueData;

@@ -44,7 +44,7 @@
     let downloading = $state(false);
 
     const retry = async (info: CobaltQueueItem) => {
-        if (info.canRetry && info.originalRequest) {
+        if (info.state !== "pending" && info.canRetry && info.originalRequest) {
             retrying = true;
             await savingHandler({
                 request: info.originalRequest,
@@ -57,9 +57,10 @@
     const download = (file: File) => {
         downloading = true;
 
+        const mimeType = info.state !== "pending" ? info.mimeType : undefined;
         downloadFile({
             file: new File([file], info.filename, {
-                type: info.mimeType,
+                type: mimeType,
             }),
         });
 
@@ -133,15 +134,22 @@
 
         case "waiting":
             return $t("queue.state.waiting");
+
+        case "pending":
+            return $t("queue.state.pending");
         }
     };
 
     const getWorkerProgress = (item: CobaltQueueItem, workerId: UUID): number | undefined => {
+        if (item.state === "pending") {
+            return undefined;
+        }
+        
         if (item.state === 'running' && item.pipelineResults[workerId]) {
             return 100;
         }
 
-        const workerIndex = item.pipeline.findIndex(w => w.workerId === workerId);
+        const workerIndex = item.pipeline.findIndex((w: { workerId: UUID }) => w.workerId === workerId);
         if (workerIndex === -1) {
             return;
         }
@@ -206,6 +214,11 @@
                 {/if}
                 {#if info.state === "running" || retrying}
                     <div class="status-spinner">
+                        <IconLoader2 />
+                    </div>
+                {/if}
+                {#if info.state === "waiting" || info.state === "pending"}
+                    <div class="status-waiting">
                         <IconLoader2 />
                     </div>
                 {/if}
@@ -331,8 +344,13 @@
 
     .status-icon,
     .status-spinner,
+    .status-waiting,
     .status-text {
         display: flex;
+    }
+
+    .status-waiting {
+        opacity: 0.5;
     }
 
     .status-text {

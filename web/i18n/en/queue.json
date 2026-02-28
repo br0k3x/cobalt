@@ -2,6 +2,7 @@
     "title": "processing queue",
     "stub": "nothing here yet, just the two of us.\ntry downloading something!",
 
+    "state.pending": "waiting in queue",
     "state.waiting": "queued",
     "state.retrying": "retrying",
     "state.starting": "starting",

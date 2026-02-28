@@ -13,6 +13,15 @@ type CobaltQueueBaseItem = {
     mediaType: CobaltPipelineResultFileType,
 };
 
+// Pending items are playlist URLs waiting to be fetched
+export type CobaltQueueItemPending = {
+    id: UUID,
+    state: "pending",
+    url: string,
+    filename: string,
+    mediaType: CobaltPipelineResultFileType,
+};
+
 type CobaltQueueItemWaiting = CobaltQueueBaseItem & {
     state: "waiting",
 };
@@ -32,7 +41,8 @@ type CobaltQueueItemError = CobaltQueueBaseItem & {
     errorCode: string,
 };
 
-export type CobaltQueueItem = CobaltQueueItemWaiting
+export type CobaltQueueItem = CobaltQueueItemPending
+                            | CobaltQueueItemWaiting
                             | CobaltQueueItemRunning
                             | CobaltQueueItemDone
                             | CobaltQueueItemError;
