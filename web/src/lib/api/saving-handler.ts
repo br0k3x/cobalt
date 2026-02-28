@@ -48,7 +48,7 @@ const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null>
             playlistUrl = urlMatch[1];
         }
 
-        const apiUrl = get(settings).processing.defaultAPI;
+        const apiUrl = currentApiURL();
         const response = await fetch(`${apiUrl}/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
         if (!response.ok) {
             return null;
