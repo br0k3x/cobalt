@@ -11,6 +11,7 @@ import { downloadFile } from "$lib/download";
 import { createDialog } from "$lib/state/dialogs";
 import { downloadButtonState } from "$lib/state/omnibox";
 import { createSavePipeline } from "$lib/task-manager/queue";
+import { waitForItemCompletion } from "$lib/state/task-manager/queue";
 import { addPendingItem, markPendingAsDone, markPendingAsError } from "$lib/state/task-manager/queue";
 import { openQueuePopover } from "$lib/state/queue-visibility";
 
@@ -169,7 +170,12 @@ const processPlaylistItem = async (
         }
     } else if (response.status === "local-processing") {
         // For local processing, convert the pending item to a full pipeline item
+        // and wait for processing to complete before moving to next item
         createSavePipeline(response, requestBody, itemId);
+        const result = await waitForItemCompletion(itemId);
+        if (!result.success) {
+            console.error(`[playlist] Item ${itemId}: Pipeline failed with error: ${result.errorCode}`);
+        }
     } else if (response.status === "picker" && response.picker.length > 0) {
         downloadFile({ url: response.picker[0].url });
         markPendingAsDone(itemId);
