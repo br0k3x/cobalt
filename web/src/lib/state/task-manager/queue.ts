@@ -83,6 +83,24 @@ export function markPendingAsError(id: UUID, errorCode: string) {
     schedule();
 }
 
+export function waitForItemCompletion(id: UUID): Promise<{ success: boolean; errorCode?: string }> {
+    return new Promise((resolve) => {
+        const unsubscribe = queue.subscribe((queueData) => {
+            const item = queueData[id];
+            if (!item) {
+                unsubscribe();
+                resolve({ success: false, errorCode: "error.queue.item_not_found" });
+            } else if (item.state === "done") {
+                unsubscribe();
+                resolve({ success: true });
+            } else if (item.state === "error") {
+                unsubscribe();
+                resolve({ success: false, errorCode: item.errorCode });
+            }
+        });
+    });
+}
+
 export function itemError(id: UUID, workerId: UUID, error: string) {
     update(queueData => {
         const item = queueData[id];
