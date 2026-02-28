@@ -87,10 +87,11 @@
         const pastedData = await pasteLinkFromClipboard();
         if (!pastedData) return;
 
-        const linkMatch = pastedData.match(/https?\:\/\/[^\s]+/g);
+        // match URL but stop before another http:// or https:// to avoid capturing duplicates
+        const linkMatch = pastedData.match(/https?:\/\/[^\s]*?(?=https?:\/\/|$)/gi);
 
         if (linkMatch) {
-            $link = linkMatch[0].split('，')[0];
+            $link = linkMatch[0].split('，')[0].replace(/https?:\/\/$/i, '');
 
             await tick(); // wait for button to render
             savingHandler({ url: $link });
