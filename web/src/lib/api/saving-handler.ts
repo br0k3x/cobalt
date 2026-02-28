@@ -146,12 +146,21 @@ const processPlaylistItem = async (
         downloadFile({ url: response.url, urlType: "redirect" });
         markPendingAsDone(itemId);
     } else if (response.status === "tunnel") {
-        const probeResult = await API.probeCobaltTunnel(response.url);
-        if (probeResult === 200) {
-            downloadFile({ url: response.url });
+        // Fetch the file directly to ensure the tunnel stream is consumed
+        // before moving to the next item (avoids race conditions)
+        try {
+            const tunnelResponse = await fetch(response.url);
+            if (!tunnelResponse.ok) {
+                markPendingAsError(itemId, `error.tunnel.${tunnelResponse.status}`);
+                return;
+            }
+            const blob = await tunnelResponse.blob();
+            const filename = response.filename || `download_${itemId}`;
+            const file = new File([blob], filename, { type: blob.type });
+            downloadFile({ file });
             markPendingAsDone(itemId);
-        } else {
-            markPendingAsError(itemId, "error.api.unreachable");
+        } catch (e) {
+            markPendingAsError(itemId, "error.tunnel.fetch");
         }
     } else if (response.status === "local-processing") {
         // For local processing, convert the pending item to a full pipeline item
