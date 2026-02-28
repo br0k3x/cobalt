@@ -6,6 +6,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  WEB_DEFAULT_API: "https://cobalt-a.br0k3.me"
+  WEB_HOST: "https://cobalt.br0k3.me"
 
 jobs:
   build-and-push-image:
@@ -13,6 +15,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        target: [api, web]
+    
 
     steps:
       - name: Checkout repository
@@ -55,5 +61,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            WEB_DEFAULT_API=${{ env.WEB_DEFAULT_API }}
+            WEB_HOST=${{ env.WEB_HOST }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
