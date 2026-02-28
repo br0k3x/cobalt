@@ -6,7 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  WEB_DEFAULT_API: "https://cobalt-a.br0k3.me"
+  WEB_DEFAULT_API: "https://pizza.br0k3.me"
   WEB_HOST: "https://cobalt.br0k3.me"
 
 jobs:
