@@ -1,9 +1,12 @@
 {
-    "instagram": [
-        "mid=<replace>; ig_did=<with>; csrftoken=<your>; ds_user_id=<own>; sessionid=<cookies>"
+    "vimeo_bearer": [
+        "access_token=<replace_this>"
     ],
     "instagram_bearer": [
         "token=<token_with_no_bearer_in_front>", "token=IGT:2:<looks_like_this>"
+    ],
+    "instagram": [
+        "mid=<replace>; ig_did=<with>; csrftoken=<your>; ds_user_id=<own>; sessionid=<cookies>"
     ],
     "reddit": [
         "client_id=<replace_this>; client_secret=<replace_this>; refresh_token=<replace_this>"
@@ -13,8 +16,5 @@
     ],
     "youtube": [
         "cookie=<replace_this>; b=<replace_this>"
-    ],
-    "vimeo": [
-        "access_token=<replace_this>"
     ]
 }
