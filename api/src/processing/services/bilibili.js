@@ -26,7 +26,7 @@ async function com_download(id, partId) {
 
     const html = await fetch(url, {
         headers: {
-            "user-agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+            "user-agent": "cobalt",
         }
     })
     .then(r => r.text())
