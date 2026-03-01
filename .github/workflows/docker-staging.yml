@@ -1,8 +1,10 @@
 name: Build staging Docker image
 
 on:
-  push:
   workflow_dispatch:
+  push:
+    branches: [main]
+    if: contains(github.event.head_commit.message, '[build]')
 
 env:
   REGISTRY: ghcr.io
