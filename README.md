@@ -8,6 +8,8 @@
         <br/>
         <a href="https://cobalt.tools">
             cobalt.tools
+        </a> |  <a href="https://cobalt.directory">
+            cobalt.directory
         </a>
     </p>
     <p>
