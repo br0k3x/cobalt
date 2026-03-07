@@ -12,7 +12,7 @@
     "services.title": "supported services (playlist)",
     "services.title_show": "show supported services (playlist)",
     "services.title_hide": "hide supported services (playlist)",
-    "services.disclaimer": "support for a service does not imply affiliation, endorsement, or any form of support other than technical compatibility.",
+    "services.disclaimer": "support for a service does not imply affiliation, endorsement, or any form of support other than technical compatibility. if a service shows a question mark (?) icon, it is not on cobalt.directory, so you should check for yourself.",
     "label.warning": "this feature is in beta, use the remux tab to fix anything broken.\nif you encounter any issues, please report them in the repository.",
 
     "tutorial.title": "how to save on ios?",
