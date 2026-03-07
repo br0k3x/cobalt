@@ -25,6 +25,7 @@ import streamable from "./services/streamable.js";
 import twitch from "./services/twitch.js";
 import rutube from "./services/rutube.js";
 import dailymotion from "./services/dailymotion.js";
+import linkedin from "./services/linkedin.js";
 import snapchat from "./services/snapchat.js";
 import loom from "./services/loom.js";
 import facebook from "./services/facebook.js";
@@ -191,6 +192,14 @@ export default async function match({ host, patternMatch, params, authType, retr
                     quality: params.videoQuality,
                     isAudioOnly,
                     subtitleLang,
+                });
+                break;
+
+            case "linkedin":
+                r = await linkedin({
+                    postId: patternMatch.urn?.split(':').pop()
+                         || patternMatch.slug?.match(/activity-(\d{19})/)?.[1],
+                    quality: params.videoQuality
                 });
                 break;
 

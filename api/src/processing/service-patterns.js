@@ -88,4 +88,8 @@ export const testers = {
     "youtube": pattern =>
         pattern.id?.length <= 11
         || pattern.postId?.length <= 40,
+
+    "linkedin": pattern =>
+        pattern.urn?.match(/^urn:li:activity:\d{19}$/)
+        || pattern.slug?.match(/activity-\d{19}/),
 }
