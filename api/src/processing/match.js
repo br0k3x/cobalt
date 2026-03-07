@@ -199,7 +199,7 @@ export default async function match({ host, patternMatch, params, authType, retr
                 r = await linkedin({
                     postId: patternMatch.urn?.split(':').pop()
                          || patternMatch.slug?.match(/activity-(\d{19})/)?.[1],
-                    quality: object.vQuality
+                    quality: params.videoQuality
                 });
                 break;
 
