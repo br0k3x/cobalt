@@ -90,5 +90,6 @@ export const testers = {
         || pattern.postId?.length <= 40,
 
     "linkedin": pattern =>
-        pattern.id?.length === 19,
+        pattern.urn?.match(/^urn:li:activity:\d{19}$/)
+        || pattern.slug?.match(/activity-\d{19}/),
 }

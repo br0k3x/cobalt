@@ -197,11 +197,12 @@ export default async function match({ host, patternMatch, params, authType, retr
 
             case "linkedin":
                 r = await linkedin({
-                    postId: patternMatch.id,
+                    postId: patternMatch.urn?.split(':').pop()
+                         || patternMatch.slug?.match(/activity-(\d{19})/)?.[1],
                     quality: object.vQuality
                 });
                 break;
-                
+
             case "soundcloud":
                 isAudioOnly = true;
                 isAudioMuted = false;
