@@ -5,7 +5,7 @@
         "params": {},
         "expected": {
             "code": 200,
-            "status": "stream"
+            "status": "tunnel"
         }
     }, {
         "name": "regular video (feed link)",
@@ -13,27 +13,27 @@
         "params": {},
         "expected": {
             "code": 200,
-            "status": "stream"
+            "status": "tunnel"
         }
     }, {
-        "name": "regular video (isAudioMuted)",
+        "name": "regular video (mute)",
         "url": "https://www.linkedin.com/feed/update/urn:li:activity:7211912701411827712/",
         "params": {
-            "isAudioMuted": true
+            "downloadMode": "mute"
         },
         "expected": {
             "code": 200,
-            "status": "stream"
+            "status": "tunnel"
         }
     }, {
-        "name": "regular video (isAudioOnly)",
+        "name": "regular video (audio only)",
         "url": "https://www.linkedin.com/feed/update/urn:li:activity:7211912701411827712/",
         "params": {
-            "isAudioOnly": true
+            "downloadMode": "audio"
         },
         "expected": {
             "code": 200,
-            "status": "stream"
+            "status": "tunnel"
         }
     }
 ]
