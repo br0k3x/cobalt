@@ -268,6 +268,9 @@ async function handlePostUrl(postId, obj) {
     String.fromCharCode(parseInt(hex, 16))
   );
 
+  // Remove trailing backslash or other junk characters
+  videoUrl = videoUrl.replace(/[\\]+$/, '').trim();
+
   // Ensure it starts with https://
   if (!videoUrl.startsWith('https://')) {
     videoUrl = 'https://' + videoUrl;
