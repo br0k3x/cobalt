@@ -95,4 +95,7 @@ export const testers = {
     
     "sora": pattern =>
         pattern.postId?.length <= 64,
+
+    "threads": pattern =>
+        pattern.user?.length <= 33 && pattern.id?.length <= 32,
 }
