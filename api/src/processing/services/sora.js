@@ -117,24 +117,78 @@ async function handlePostUrl(postId, obj) {
 
   const html = await res.text();
   console.log('[sora] HTML length:', html.length);
+  
+  // Debug: check if videos.openai.com exists in HTML at all
+  const hasVideosDomain = html.includes('videos.openai.com');
+  console.log('[sora] contains videos.openai.com:', hasVideosDomain);
+  
+  // Check for common patterns
+  console.log('[sora] contains __NEXT_DATA__:', html.includes('__NEXT_DATA__'));
+  console.log('[sora] contains video tag:', html.includes('<video'));
+  console.log('[sora] contains openai.com:', html.includes('openai.com'));
+  
+  // Log the title to see what page we got
+  const pageTitleMatch = html.match(/<title>([^<]+)<\/title>/i);
+  console.log('[sora] page title:', pageTitleMatch?.[1] || 'no title');
+  
+  // Log first 500 chars of body to see what we're getting
+  const bodyStart = html.indexOf('<body');
+  if (bodyStart > -1) {
+    console.log('[sora] body preview:', html.substring(bodyStart, bodyStart + 500));
+  }
+  
+  if (hasVideosDomain) {
+    // Log a snippet around the first occurrence
+    const idx = html.indexOf('videos.openai.com');
+    console.log('[sora] context around video URL:', html.substring(Math.max(0, idx - 20), idx + 100));
+  }
 
   // Extract video URL from og:video meta tag
   let videoUrl;
   let title;
 
-  const ogVideoMatch = html.match(
-    /<meta\s+property=["']og:video["']\s+content=["']([^"']+)["']/i,
-  );
-  if (ogVideoMatch) {
-    videoUrl = ogVideoMatch[1];
-    console.log('[sora] found og:video URL');
-    if (videoUrl.includes('&')) {
-      videoUrl = videoUrl
-        .replace(/&quot;/g, '"')
-        .replace(/&#x27;/g, "'")
-        .replace(/&#39;/g, "'")
-        // Do &amp; last to avoid double-decoding
-        .replace(/&amp;/g, "&");
+  // Try to extract from __NEXT_DATA__ JSON (Next.js embeds data here)
+  const nextDataMatch = html.match(/<script\s+id="__NEXT_DATA__"[^>]*>([^<]+)<\/script>/i);
+  if (nextDataMatch) {
+    try {
+      const nextData = JSON.parse(nextDataMatch[1]);
+      console.log('[sora] found __NEXT_DATA__, searching for video URL');
+      // Search recursively for videos.openai.com URL
+      const findVideoUrl = (obj) => {
+        if (typeof obj === 'string' && obj.includes('videos.openai.com')) {
+          return obj;
+        }
+        if (typeof obj === 'object' && obj !== null) {
+          for (const value of Object.values(obj)) {
+            const found = findVideoUrl(value);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      videoUrl = findVideoUrl(nextData);
+      if (videoUrl) console.log('[sora] found video URL in __NEXT_DATA__');
+    } catch (e) {
+      console.log('[sora] failed to parse __NEXT_DATA__:', e.message);
+    }
+  }
+
+  // Try og:video meta tag
+  if (!videoUrl) {
+    const ogVideoMatch = html.match(
+      /<meta\s+property=["']og:video["']\s+content=["']([^"']+)["']/i,
+    );
+    if (ogVideoMatch) {
+      videoUrl = ogVideoMatch[1];
+      console.log('[sora] found og:video URL');
+      if (videoUrl.includes('&')) {
+        videoUrl = videoUrl
+          .replace(/&quot;/g, '"')
+          .replace(/&#x27;/g, "'")
+          .replace(/&#39;/g, "'")
+          // Do &amp; last to avoid double-decoding
+          .replace(/&amp;/g, "&");
+      }
     }
   }
 
@@ -167,6 +221,15 @@ async function handlePostUrl(postId, obj) {
         videoUrl = match[1];
         console.log('[sora] found video URL via src attribute');
         break;
+      }
+    }
+    
+    // Ultimate fallback: any videos.openai.com URL
+    if (!videoUrl) {
+      const anyMatch = html.match(/https:\/\/videos\.openai\.com\/[^"'\s<>]+/i);
+      if (anyMatch) {
+        videoUrl = anyMatch[0];
+        console.log('[sora] found video URL via any pattern');
       }
     }
   }
