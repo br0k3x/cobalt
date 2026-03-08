@@ -116,6 +116,7 @@ async function handlePostUrl(postId, obj) {
   }
 
   const html = await res.text();
+  console.log('[sora] HTML length:', html.length);
 
   // Extract video URL from og:video meta tag
   let videoUrl;
@@ -126,6 +127,7 @@ async function handlePostUrl(postId, obj) {
   );
   if (ogVideoMatch) {
     videoUrl = ogVideoMatch[1];
+    console.log('[sora] found og:video URL');
     if (videoUrl.includes('&')) {
       videoUrl = videoUrl
         .replace(/&quot;/g, '"')
@@ -138,6 +140,7 @@ async function handlePostUrl(postId, obj) {
 
   // Fallback: search for video URLs in HTML if og:video not found
   if (!videoUrl) {
+    console.log('[sora] og:video not found, trying fallback patterns');
     const videoPatterns = [
       // Match URLs with various path structures (az/vg-assets, vg-assets, etc.)
       /(https:\/\/videos\.openai\.com\/[^"'>\s\\]+\.mp4[^"'>\s]*)/g,
@@ -166,17 +169,33 @@ async function handlePostUrl(postId, obj) {
   }
 
   if (!videoUrl) {
+    console.log('[sora] no video URL found');
     return { error: "fetch.empty" };
   }
 
-  // Generate filename
+  // Clean up the video URL - decode unicode escapes
+  videoUrl = videoUrl.replace(/\\u([\dA-Fa-f]{4})/g, (_, hex) => 
+    String.fromCharCode(parseInt(hex, 16))
+  );
+
+  // Ensure it starts with https://
+  if (!videoUrl.startsWith('https://')) {
+    videoUrl = 'https://' + videoUrl;
+  }
+
+  console.log('[sora] final video URL:', videoUrl.substring(0, 80) + '...');
+
   const cleanId = postId.replace(/[^a-zA-Z0-9_-]/g, "");
-  const videoFilename = `sora_${cleanId}.mp4`;
+  const cleanTitle = title?.replace(/[^\w\s-]/g, '').trim() || `Sora Video`;
 
   return {
-    type: "proxy",
     urls: videoUrl,
-    filename: videoFilename,
+    filenameAttributes: {
+      service: 'sora',
+      id: cleanId,
+      title: cleanTitle,
+      extension: 'mp4'
+    },
     fileMetadata: {
       title: title || `Sora Video ${cleanId}`,
     },
