@@ -70,16 +70,12 @@ const config = {
                     "self",
                     "wasm-unsafe-eval",
                     "challenges.cloudflare.com",
-                    "https://openpanel.dev",
 
                     // eslint-disable-next-line no-undef
                     process.env.WEB_PLAUSIBLE_HOST ? process.env.WEB_PLAUSIBLE_HOST : "",
 
                     // hash of the theme preloader in app.html
                     "sha256-g67gIjM3G8yMbjbxyc3QUoVsKhdxgcQzCmSKXiZZo6s=",
-
-                    // hash of the openpanel analytics init script in app.html
-                    "sha256-VU7Atk3oI3vHH7Xm0pJd66aLY7gBFI3708ajBVTUWT0=",
                 ],
 
                 "script-src-attr": [
