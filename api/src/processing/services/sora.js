@@ -24,7 +24,7 @@ const fetchWithFlareSolverr = async (url) => {
         url: url,
         maxTimeout: 60000,
         // Wait for React to hydrate and render the video element
-        wait: 5000,
+        wait: 10000,
       }),
     });
 
@@ -226,12 +226,19 @@ async function handlePostUrl(postId, obj) {
       }
     }
     
-    // Ultimate fallback: any videos.openai.com URL
+    // Ultimate fallback: any videos.openai.com URL (but skip thumbnails)
     if (!videoUrl) {
-      const anyMatch = html.match(/https:\/\/videos\.openai\.com\/[^"'\s<>]+/i);
-      if (anyMatch) {
-        videoUrl = anyMatch[0];
+      const allMatches = html.matchAll(/https:\/\/videos\.openai\.com\/[^"'\s<>]+/gi);
+      for (const match of allMatches) {
+        const url = match[0];
+        // Skip thumbnail URLs
+        if (url.includes('%2Fthumbnail%2F') || url.includes('/thumbnail/') ||
+            url.includes('%2Fdrvs%2F') || url.includes('/drvs/')) {
+          continue;
+        }
+        videoUrl = url;
         console.log('[sora] found video URL via any pattern');
+        break;
       }
     }
   }
