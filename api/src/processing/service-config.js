@@ -254,7 +254,8 @@ export const services = {
     },
     sora: {
         patterns: ["p/:postId"],
-        altDomains: ["sora.chatgpt.com"]
+        altDomains: ["sora.chatgpt.com"],
+        playlistSupport: false
     }
 }
 
