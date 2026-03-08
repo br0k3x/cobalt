@@ -182,15 +182,16 @@ async function handlePostUrl(postId, obj) {
     return { error: "fetch.empty" };
   }
 
-  // Decode HTML entities
+  console.log('[sora] raw video URL:', videoUrl.substring(0, 100) + '...');
+
+  // Decode HTML entities only (don't touch URL encoding like %2F)
   videoUrl = videoUrl
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
     .replace(/&#x27;/g, "'")
-    .replace(/&#39;/g, "'")
-    .replace(/%2F/gi, "/");
+    .replace(/&#39;/g, "'");
 
-  // Clean up the video URL - decode unicode escapes
+  // Clean up the video URL - decode unicode escapes (\u0026 -> &)
   videoUrl = videoUrl.replace(/\\u([\dA-Fa-f]{4})/g, (_, hex) => 
     String.fromCharCode(parseInt(hex, 16))
   );
@@ -200,7 +201,7 @@ async function handlePostUrl(postId, obj) {
     videoUrl = 'https://' + videoUrl;
   }
 
-  console.log('[sora] final video URL:', videoUrl.substring(0, 80) + '...');
+  console.log('[sora] final video URL:', videoUrl);
 
   const cleanId = postId.replace(/[^a-zA-Z0-9_-]/g, "");
   const cleanTitle = title?.replace(/[^\w\s-]/g, '').trim() || `Sora Video`;
