@@ -1,45 +1,75 @@
-import { genericUserAgent } from "../../config.js";
+import { genericUserAgent, env } from "../../config.js";
 import { getCookie, updateCookie } from "../cookie/manager.js";
 
 // Helper function to add delay between requests
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Helper function to check if response is a Cloudflare challenge
-const isCloudflareChallenge = (response) => {
-  return (
-    response.status === 403 ||
-    response.status === 503 ||
-    (response.status === 200 &&
-      response.headers.get("server")?.includes("cloudflare"))
-  );
-};
-
-// Enhanced fetch with retry logic for Cloudflare challenges
-const fetchWithRetry = async (url, options, maxRetries = 3) => {
-  let lastError;
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url, options);
-
-      // If it's a Cloudflare challenge and not the last attempt, wait and retry
-      if (isCloudflareChallenge(response) && attempt < maxRetries) {
-        await delay(1000 * attempt); // Exponential backoff
-        continue;
-      }
-
-      return response;
-    } catch (error) {
-      lastError = error;
-      if (attempt < maxRetries) {
-        await delay(1000 * attempt);
-        continue;
-      }
-      throw error;
-    }
+// Fetch using FlareSolverr proxy to bypass Cloudflare
+const fetchWithFlareSolverr = async (url) => {
+  const flareSolverrURL = env.flareSolverrURL;
+  if (!flareSolverrURL) {
+    return null;
   }
 
-  throw lastError;
+  console.log('[sora] using FlareSolverr at:', flareSolverrURL);
+
+  try {
+    const response = await fetch(`${flareSolverrURL}/v1`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cmd: 'request.get',
+        url: url,
+        maxTimeout: 60000,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'ok' && data.solution) {
+      console.log('[sora] FlareSolverr success, status:', data.solution.status);
+      return {
+        ok: data.solution.status >= 200 && data.solution.status < 300,
+        status: data.solution.status,
+        text: async () => data.solution.response,
+        headers: new Headers(),
+      };
+    } else {
+      console.log('[sora] FlareSolverr failed:', data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error('[sora] FlareSolverr error:', error.message);
+    return null;
+  }
+};
+
+// Direct fetch with cookies
+const fetchDirect = async (url, cookie) => {
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": genericUserAgent,
+      accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "cache-control": "no-cache",
+      "pragma": "no-cache",
+      "sec-ch-ua": '"Not(A:Brand";v="8", "Chromium";v="144"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "sec-fetch-user": "?1",
+      "upgrade-insecure-requests": "1",
+      cookie: cookie?.toString(),
+    },
+  });
+
+  return response;
 };
 
 export default async function (obj) {
@@ -65,35 +95,21 @@ async function handlePostUrl(postId, obj) {
   const targetUrl = `https://sora.chatgpt.com/p/${postId}`;
   const cookie = getCookie('sora');
 
-  console.log('[sora] cookie loaded:', cookie ? 'yes' : 'no');
-  if (cookie) console.log('[sora] cookie preview:', cookie.toString().substring(0, 50) + '...');
+  let res;
 
-  const res = await fetchWithRetry(targetUrl, {
-    headers: {
-      // if you have a cookie configured, change the UA to your browser's UA.
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 OPR/128.0.0.0",
-      accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-      "accept-encoding": "gzip, deflate, br, zstd",
-      "cache-control": "no-cache",
-      "pragma": "no-cache",
-      "sec-ch-ua":
-        '"Not(A:Brand";v="8", "Chromium";v="144", "Opera GX";v="128"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "none",
-      "sec-fetch-user": "?1",
-      "upgrade-insecure-requests": "1",
-      cookie: cookie?.toString(),
-    },
-  });
+  // Try FlareSolverr first if configured
+  if (env.flareSolverrURL) {
+    res = await fetchWithFlareSolverr(targetUrl);
+  }
 
-  console.log('[sora] response status:', res.status);
-
-  updateCookie(cookie, res.headers);
+  // Fall back to direct fetch with cookies
+  if (!res || !res.ok) {
+    console.log('[sora] trying direct fetch with cookies');
+    console.log('[sora] cookie loaded:', cookie ? 'yes' : 'no');
+    res = await fetchDirect(targetUrl, cookie);
+    console.log('[sora] direct fetch status:', res.status);
+    updateCookie(cookie, res.headers);
+  }
 
   if (!res.ok) {
     return { error: "fetch.fail" };
