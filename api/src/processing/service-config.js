@@ -251,10 +251,6 @@ export const services = {
         ],
         subdomains: ["music", "m"],
         playlistSupport: true
-    },
-    sora: {
-        patterns: ["p/:postId"],
-        altDomains: ["sora.chatgpt.com"]
     }
 }
 
