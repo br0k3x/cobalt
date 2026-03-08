@@ -1,4 +1,5 @@
 import { genericUserAgent } from "../../config.js";
+import { getCookie, updateCookie } from "../cookie/manager.js";
 
 // Helper function to add delay between requests
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -62,27 +63,31 @@ export default async function (obj) {
 
 async function handlePostUrl(postId, obj) {
   const targetUrl = `https://sora.chatgpt.com/p/${postId}`;
+  const cookie = getCookie('sora');
 
   const res = await fetchWithRetry(targetUrl, {
     headers: {
       "user-agent": genericUserAgent,
       accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "accept-language": "en-US,en;q=0.9",
-      "accept-encoding": "gzip, deflate, br",
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "cache-control": "no-cache",
+      "pragma": "no-cache",
       "sec-ch-ua":
-        '"Google Chrome";v="138", "Chromium";v="138", "Not=A?Brand";v="99"',
+        '"Not(A:Brand";v="8", "Chromium";v="144"',
       "sec-ch-ua-mobile": "?0",
       "sec-ch-ua-platform": '"Windows"',
       "sec-fetch-dest": "document",
       "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "none",
+      "sec-fetch-site": "same-origin",
       "sec-fetch-user": "?1",
       "upgrade-insecure-requests": "1",
-      "cache-control": "max-age=0",
-      dnt: "1",
+      cookie: cookie?.toString(),
     },
   });
+
+  updateCookie(cookie, res.headers);
 
   if (!res.ok) {
     return { error: "fetch.fail" };
