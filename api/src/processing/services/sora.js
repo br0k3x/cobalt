@@ -23,6 +23,8 @@ const fetchWithFlareSolverr = async (url) => {
         cmd: 'request.get',
         url: url,
         maxTimeout: 60000,
+        // Wait for React to hydrate and render the video element
+        wait: 5000,
       }),
     });
 
