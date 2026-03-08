@@ -101,6 +101,8 @@ export const loadEnvs = (env = process.env) => {
 
         externalProxy: env.API_EXTERNAL_PROXY,
 
+        flareSolverrURL: env.FLARESOLVERR_URL,
+
         // used only for comparing against old values when envs are being updated
         httpProxyValues: httpProxyVariables.map(k => String(env[k])).join(''),
 
