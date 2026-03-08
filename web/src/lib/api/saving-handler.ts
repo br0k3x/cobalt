@@ -63,6 +63,48 @@ const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null>
     }
 };
 
+const processSingleVideo = async (
+    videoUrl: string,
+    getSetting: ReturnType<typeof lazySettingGetter>
+): Promise<void> => {
+    const requestBody: CobaltSaveRequestBody = {
+        url: videoUrl,
+        localProcessing: get(settings).save.localProcessing,
+        alwaysProxy: getSetting("save", "alwaysProxy"),
+        downloadMode: getSetting("save", "downloadMode"),
+        subtitleLang: getSetting("save", "subtitleLang"),
+        filenameStyle: getSetting("save", "filenameStyle"),
+        disableMetadata: getSetting("save", "disableMetadata"),
+        audioFormat: getSetting("save", "audioFormat"),
+        audioBitrate: getSetting("save", "audioBitrate"),
+        tiktokFullAudio: getSetting("save", "tiktokFullAudio"),
+        youtubeDubLang: getSetting("save", "youtubeDubLang"),
+        youtubeBetterAudio: getSetting("save", "youtubeBetterAudio"),
+        videoQuality: getSetting("save", "videoQuality"),
+        youtubeVideoCodec: getSetting("save", "youtubeVideoCodec"),
+        youtubeVideoContainer: getSetting("save", "youtubeVideoContainer"),
+        youtubeHLS: env.ENABLE_DEPRECATED_YOUTUBE_HLS ? getSetting("save", "youtubeHLS") : undefined,
+        allowH265: getSetting("save", "allowH265"),
+        convertGif: getSetting("save", "convertGif"),
+    };
+
+    const response = await API.request(requestBody);
+    if (!response || response.status === "error") return;
+
+    if (response.status === "redirect") {
+        downloadFile({ url: response.url, urlType: "redirect" });
+    } else if (response.status === "tunnel") {
+        const probeResult = await API.probeCobaltTunnel(response.url);
+        if (probeResult === 200) {
+            downloadFile({ url: response.url });
+        }
+    } else if (response.status === "local-processing") {
+        createSavePipeline(response, requestBody);
+    } else if (response.status === "picker" && response.picker.length > 0) {
+        downloadFile({ url: response.picker[0].url });
+    }
+};
+
 const processPlaylistItem = async (
     itemId: string,
     videoUrl: string,

@@ -8,14 +8,14 @@ FROM base AS build
 WORKDIR /app
 COPY . /app
 
-RUN corepack enable && \
-    apk add --no-cache python3 alpine-sdk
+RUN corepack enable
+RUN apk add --no-cache python3 alpine-sdk
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
-RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api && \
-    pnpm deploy --filter=@imput/cobalt-web /prod/web
+RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
+RUN pnpm deploy --filter=@imput/cobalt-web /prod/web
 
 # Build the web app
 FROM base AS web-builder
