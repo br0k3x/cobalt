@@ -8,13 +8,14 @@ import { isCluster } from '../../config.js';
 
 const WRITE_INTERVAL = 60000;
 const VALID_SERVICES = new Set([
-    'instagram',
+    'vimeo_bearer',
     'instagram_bearer',
+    'instagram',
     'reddit',
     'twitter',
     'youtube',
-    'vimeo_bearer',
     'sora',
+    'threads'
 ]);
 
 const invalidCookies = {};

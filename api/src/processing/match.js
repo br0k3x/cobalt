@@ -32,7 +32,8 @@ import facebook from "./services/facebook.js";
 import bluesky from "./services/bluesky.js";
 import xiaohongshu from "./services/xiaohongshu.js";
 import newgrounds from "./services/newgrounds.js";
-import sora from "./services/sora.js"
+import sora from "./services/sora.js";
+import threads from "./services/threads.js";
 
 const MAX_RETRY_AMOUNT = 5;
 
@@ -286,6 +287,15 @@ export default async function match({ host, patternMatch, params, authType, retr
                     postId: patternMatch.postId,
                     quality: params.videoQuality,
                     isAudioOnly,
+                });
+                break;
+
+            case "threads":
+                r = await threads({
+                    ...patternMatch,
+                    quality: params.videoQuality,
+                    alwaysProxy: params.alwaysProxy,
+                    dispatcher
                 });
                 break;
 

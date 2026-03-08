@@ -256,6 +256,11 @@ export const services = {
         patterns: ["p/:postId"],
         altDomains: ["sora.chatgpt.com"],
         playlistSupport: false
+    },
+    threads: {
+        patterns: [":user/post/:id"],
+        tld: "net",
+        playlistSupport: false
     }
 }
 
