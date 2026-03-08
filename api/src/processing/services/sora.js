@@ -141,17 +141,31 @@ async function handlePostUrl(postId, obj) {
   // Fallback: search for video URLs in HTML if og:video not found
   if (!videoUrl) {
     console.log('[sora] og:video not found, trying fallback patterns');
-    const videoPatterns = [
-      // Match URLs with various path structures (az/vg-assets, vg-assets, etc.)
-      /(https:\/\/videos\.openai\.com\/[^"'>\s\\]+\.mp4[^"'>\s]*)/g,
-      /"(https:\/\/videos\.openai\.com\/[^"]+\.mp4[^"]*)"/g,
-      /'(https:\/\/videos\.openai\.com\/[^']+\.mp4[^']*)'/g,
-    ];
-
-    for (const pattern of videoPatterns) {
-      const match = html.match(pattern);
-      if (match) {
-        videoUrl = match[0].replace(/^["']|["']$/g, ""); // Remove quotes
+    
+    // First, try to get from data-detail-view-assigned-src (main video player)
+    const detailViewMatch = html.match(/data-detail-view-assigned-src=["']([^"']+videos\.openai\.com[^"']+)["']/i);
+    if (detailViewMatch) {
+      videoUrl = detailViewMatch[1];
+      console.log('[sora] found video via data-detail-view-assigned-src');
+    }
+    
+    // Try to extract from <video> tag src attribute (not poster which is the thumbnail)
+    if (!videoUrl) {
+      // Match src= that comes AFTER the video tag opening, avoiding poster=
+      const videoTagMatch = html.match(/<video[^>]+?\ssrc=["']([^"']+videos\.openai\.com[^"']+)["']/i);
+      if (videoTagMatch) {
+        videoUrl = videoTagMatch[1];
+        console.log('[sora] found video tag src');
+      }
+    }
+    
+    // Last resort: find src= attributes with videos.openai.com URLs
+    if (!videoUrl) {
+      // Only match src= attributes, not poster=
+      const srcMatches = html.matchAll(/\ssrc=["'](https:\/\/videos\.openai\.com\/[^"']+)["']/gi);
+      for (const match of srcMatches) {
+        videoUrl = match[1];
+        console.log('[sora] found video URL via src attribute');
         break;
       }
     }
@@ -163,15 +177,18 @@ async function handlePostUrl(postId, obj) {
     title = titleMatch[1].replace(" - Sora", "").replace(" | Sora", "").trim();
   }
 
-  // Decode HTML entities if present (only for fallback URLs that weren't already decoded)
-  if (videoUrl && !ogVideoMatch) {
-    videoUrl = videoUrl.replace(/&amp;/g, "&");
-  }
-
   if (!videoUrl) {
     console.log('[sora] no video URL found');
     return { error: "fetch.empty" };
   }
+
+  // Decode HTML entities
+  videoUrl = videoUrl
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/%2F/gi, "/");
 
   // Clean up the video URL - decode unicode escapes
   videoUrl = videoUrl.replace(/\\u([\dA-Fa-f]{4})/g, (_, hex) => 
