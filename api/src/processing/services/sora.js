@@ -65,6 +65,9 @@ async function handlePostUrl(postId, obj) {
   const targetUrl = `https://sora.chatgpt.com/p/${postId}`;
   const cookie = getCookie('sora');
 
+  console.log('[sora] cookie loaded:', cookie ? 'yes' : 'no');
+  if (cookie) console.log('[sora] cookie preview:', cookie.toString().substring(0, 50) + '...');
+
   const res = await fetchWithRetry(targetUrl, {
     headers: {
       "user-agent": genericUserAgent,
@@ -86,6 +89,8 @@ async function handlePostUrl(postId, obj) {
       cookie: cookie?.toString(),
     },
   });
+
+  console.log('[sora] response status:', res.status);
 
   updateCookie(cookie, res.headers);
 
