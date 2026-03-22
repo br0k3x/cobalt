@@ -28,7 +28,6 @@
         "@imput/version-info": "workspace:^",
         "content-disposition-header": "0.6.0",
         "cors": "^2.8.5",
-<<<<<<< HEAD
         "dotenv": "^17.2.3",
         "express": "^4.22.1",
         "express-rate-limit": "^8.2.1",
@@ -40,7 +39,6 @@
         "nanoid": "^5.1.6",
         "set-cookie-parser": "2.7.2",
         "undici": "^6.22.0",
-=======
         "dotenv": "^16.0.1",
         "express": "^4.21.2",
         "express-rate-limit": "^7.4.1",
@@ -51,26 +49,19 @@
         "nanoid": "^5.0.9",
         "set-cookie-parser": "2.6.0",
         "undici": "^6.21.3",
->>>>>>> bd6e8fdd (api: update ffmpeg & add USE_SYSTEM_FFMPEG env var)
         "url-pattern": "1.0.3",
-<<<<<<< HEAD
         "youtubei.js": "^17.0.1",
         "zod": "^4.2.1"
-=======
         "youtubei.js": "16.0.0",
         "zod": "^3.23.8"
->>>>>>> e4787103 (api: update youtube.js)
     },
     "optionalDependencies": {
         "bgutils-js": "^3.2.0",
         "freebind": "^0.2.2",
         "jsdom": "^27.3.0",
-<<<<<<< HEAD
         "rate-limit-redis": "^4.3.1",
         "redis": "^4.7.1"
-=======
         "rate-limit-redis": "^4.2.0",
         "redis": "^4.7.0"
->>>>>>> 9bf49a3b (api/youtube: add po tokens)
     }
 }
