@@ -12,6 +12,7 @@ RUN corepack enable && \
     apk add --no-cache python3 alpine-sdk && \
     pnpm config set ignore-scripts true
 
+RUN pnpm up isolated-vm@latest
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
