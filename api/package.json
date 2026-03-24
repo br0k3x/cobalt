@@ -42,7 +42,7 @@
         "undici": "^6.21.3",
         "url-pattern": "1.0.3",
         "youtubei": "^1.8.4",
-        "youtubei.js": "github:LuanRT/YouTube.js#0449b65495963f1a85b0a68ff6ef1013886ccda0",
+        "youtubei.js": "^17.0.1",
         "zod": "^3.23.8"
     },
     "optionalDependencies": {
