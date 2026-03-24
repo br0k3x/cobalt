@@ -46,21 +46,12 @@ const isPlaylistURL = (url: string): boolean => {
 
 const fetchPlaylistLinks = async (playlistUrl: string): Promise<string[] | null> => {
     try {
-<<<<<<< HEAD
-        // fix duplicated URLs (e.g., "https://...https://..." -> "https://...")
         const urlMatch = playlistUrl.match(/^(https?:\/\/.+?)(https?:\/\/)/i);
         if (urlMatch) {
             playlistUrl = urlMatch[1];
         }
 
-<<<<<<< HEAD
-        const apiUrl = get(settings).processing.defaultAPI;
-=======
         const apiUrl = currentApiURL();
->>>>>>> 939aa870 (Fix playlist endpoint: use currentApiURL() instead of missing settings.processing.defaultAPI)
-=======
-        const apiUrl = currentApiURL();
->>>>>>> 51785d10 (web/ci: fix check failing)
         const response = await fetch(`${apiUrl}/playlist/getlinks?url=${encodeURIComponent(playlistUrl)}`);
         if (!response.ok) {
             return null;
