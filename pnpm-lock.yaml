@@ -72,8 +72,8 @@ importers:
         specifier: ^1.8.4
         version: 1.8.5
       youtubei.js:
-        specifier: github:LuanRT/YouTube.js#0449b65495963f1a85b0a68ff6ef1013886ccda0
-        version: https://codeload.github.com/LuanRT/YouTube.js/tar.gz/0449b65495963f1a85b0a68ff6ef1013886ccda0(patch_hash=ci3b6dszts4ogaidtqmx53krj4)
+        specifier: ^17.0.1
+        version: 17.0.1
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -2434,9 +2434,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  youtubei.js@https://codeload.github.com/LuanRT/YouTube.js/tar.gz/0449b65495963f1a85b0a68ff6ef1013886ccda0:
-    resolution: {tarball: https://codeload.github.com/LuanRT/YouTube.js/tar.gz/0449b65495963f1a85b0a68ff6ef1013886ccda0}
-    version: 16.0.1
+  youtubei.js@17.0.1:
+    resolution: {integrity: sha512-1lO4b8UqMDzE0oh2qEGzbBOd4UYRdxn/4PdpRM7BGTHxM6ddsEsKZTu90jp8V9FHVgC2h1UirQyqoqLiKwl+Zg==}
 
   youtubei@1.8.5:
     resolution: {integrity: sha512-wCgLsEYyyimgBHvZmkcBXqzygPJUIuspwxsJmLwarNlFoQ0LZXsldknXljjrrsg0XZS2UmTVTm1y7umFKKu61w==}
@@ -4542,7 +4541,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  youtubei.js@https://codeload.github.com/LuanRT/YouTube.js/tar.gz/0449b65495963f1a85b0a68ff6ef1013886ccda0(patch_hash=ci3b6dszts4ogaidtqmx53krj4):
+  youtubei.js@17.0.1:
     dependencies:
       '@bufbuild/protobuf': 2.11.0
       meriyah: 6.1.4
