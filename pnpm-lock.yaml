@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  youtubei.js@16.0.1:
-    hash: ci3b6dszts4ogaidtqmx53krj4
-    path: patches/youtubei.js@16.0.1.patch
-
 importers:
 
   .:
