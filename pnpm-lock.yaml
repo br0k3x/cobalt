@@ -62,7 +62,7 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       youtubei.js:
-        specifier: ^17.0.1
+        specifier: 17.0.1
         version: 17.0.1
       zod:
         specifier: ^4.2.1
