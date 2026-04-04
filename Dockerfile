@@ -34,7 +34,7 @@ COPY --from=build /prod/web /app
 COPY --from=build /app/.git /app/.git
 
 RUN corepack enable && corepack install -g pnpm@9.6.0
-RUN pnpm run build --no-node-snapshot
+RUN pnpm run build
 
 FROM base AS api
 WORKDIR /app
