@@ -1,18 +1,14 @@
 FROM node:24-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ARG WEB_DEFAULT_API
-ARG WEB_HOST
 
 FROM base AS build
 WORKDIR /app
 COPY . /app
 
-RUN corepack enable && \
-    apk add --no-cache python3 alpine-sdk && \
-    pnpm config set ignore-scripts true
+RUN corepack enable
+RUN apk add --no-cache python3 alpine-sdk
 
-RUN pnpm up isolated-vm@latest
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
