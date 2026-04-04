@@ -148,6 +148,7 @@ export default function({
                     params = { type: r.type };
                     break;
 
+                case "rutube":
                 case "vimeo":
                     if (Array.isArray(r.urls)) {
                         params = { type: "merge" };
@@ -176,9 +177,13 @@ export default function({
 
                 case "vk":
                 case "tiktok":
-                    params = {
-                        type: r.subtitles ? "remux" : "proxy"
-                    };
+                    if (r.subtitles) {
+                        params = { type: "remux" };
+                    } else if (Array.isArray(r.urls)) {
+                        params = { type: "merge" };
+                    } else {
+                        params = { type: "proxy" };
+                    }
                     break;
 
                 case "ok":
