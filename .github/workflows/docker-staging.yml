@@ -50,7 +50,6 @@ jobs:
         with:
           tags: type=raw,value=staging-${{ matrix.target }}
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
