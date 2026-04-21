@@ -125,13 +125,11 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     const startTimestamp = startTime.getTime();
 
     const getServerInfo = (ip) => {
-    const getServerInfo = (ip) => {
         return JSON.stringify({
             cobalt: {
                 version: version,
                 url: env.apiURL,
                 startTime: `${startTimestamp}`,
-                turnstileSitekey: isSessionRequired(ip) ? env.turnstileSitekey : undefined,
                 turnstileSitekey: isSessionRequired(ip) ? env.turnstileSitekey : undefined,
                 services: [...env.enabledServices].map(e => {
                     return friendlyServiceName(e);
@@ -494,5 +492,4 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     });
 
     setupTunnelHandler();
-   }
 }
