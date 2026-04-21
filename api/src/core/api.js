@@ -1,7 +1,6 @@
 import cors from "cors";
 import http from "node:http";
 import ipaddr from "ipaddr.js";
-import ipaddr from "ipaddr.js";
 import rateLimit from "express-rate-limit";
 import { setGlobalDispatcher, EnvHttpProxyAgent } from "undici";
 import { getCommit, getBranch, getRemote, getVersion } from "@imput/version-info";
