@@ -12,15 +12,6 @@
     <meta property="og:title" content={$t("general.cobalt")} />
 </svelte:head>
 
-{createDialog({
-    id: "beta-dialog",
-    meowbalt: "question",
-    title: "beta feature",
-    bodyText: $t("playlist.label.warning"),
-    dismissable: true,
-    leftAligned: true,
-    type: "small"
-})}
 <div id="cobalt-playlist-container" class="center-column-container">
     <SupportedServices />
     <main

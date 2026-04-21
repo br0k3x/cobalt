@@ -68,7 +68,7 @@
             document.querySelector("[data-first-focus]");
         to_focus?.focus();
 
-        if ($page.url.pathname === "/") {
+        if ($page.url.pathname === "/" || $page.url.pathname === "/playlist") {
             await getServerInfo();
         }
     });
@@ -142,7 +142,7 @@
         {/if}
         <ProcessingQueue />
         <div id="content">
-            {#if ($turnstileEnabled && $page.url.pathname === "/") || $turnstileCreated}
+            {#if ($turnstileEnabled && $page.url.pathname === "/" || $page.url.pathname === "/playlist") || $turnstileCreated}
                 <Turnstile />
             {/if}
             <slot></slot>
