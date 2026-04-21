@@ -127,6 +127,7 @@ export const loadEnvs = (env = process.env) => {
 
         allServices,
         enabledServices,
+        playlistServices,
 
         useSystemFFmpeg: env.USE_SYSTEM_FFMPEG === "1",
 
