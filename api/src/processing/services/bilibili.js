@@ -1,5 +1,4 @@
 import { env } from "../../config.js";
-import { env } from "../../config.js";
 import { resolveRedirectingURL } from "../url.js";
 
 // TO-DO: higher quality downloads (currently requires an account)

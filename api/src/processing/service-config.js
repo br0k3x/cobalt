@@ -197,7 +197,6 @@ export const services = {
             ":user/status/:id",
             ":user/status/:id/video/:index",
             ":user/status/:id/photo/:index",
-            ":user/status/:id/mediaviewer",
             ":user/status/:id/mediaViewer",
             "i/bookmarks?post_id=:id"
         ],
