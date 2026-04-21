@@ -13,7 +13,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-<<<<<<< HEAD
     pnpm deploy --filter=@imput/cobalt-api --prod /prod/api && \
     pnpm deploy --filter=@imput/cobalt-web /prod/web
 
@@ -32,9 +31,6 @@ COPY --from=build /app/.git /app/.git
 
 RUN corepack enable && corepack install -g pnpm@9.6.0
 RUN pnpm run build
-=======
-    pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
->>>>>>> upstream/meowing.de
 
 FROM base AS api
 WORKDIR /app
