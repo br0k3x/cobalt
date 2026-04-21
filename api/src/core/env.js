@@ -127,7 +127,6 @@ export const loadEnvs = (env = process.env) => {
 
         allServices,
         enabledServices,
-        playlistServices,
 
         useSystemFFmpeg: env.USE_SYSTEM_FFMPEG === "1",
 
@@ -136,8 +135,9 @@ export const loadEnvs = (env = process.env) => {
         ytSessionReloadInterval: 300,
         ytSessionInnertubeClient: env.YOUTUBE_SESSION_INNERTUBE_CLIENT,
         ytAllowBetterAudio: env.YOUTUBE_ALLOW_BETTER_AUDIO !== "0",
-        ytPlayerId: env.YOUTUBE_PLAYER_ID,
+        ytPlayerIds: env.YOUTUBE_PLAYER_ID?.split(',')?.map(p => p.trim()),
         ytGeneratePoTokens: env.YOUTUBE_GENERATE_PO_TOKENS !== "0",
+        ytUseOnesie: env.YOUTUBE_USE_ONESIE === "1",
 
         // "never" | "session" | "always"
         forceLocalProcessing: env.FORCE_LOCAL_PROCESSING ?? "never",

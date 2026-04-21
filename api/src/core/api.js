@@ -1,6 +1,7 @@
 import cors from "cors";
 import http from "node:http";
 import ipaddr from "ipaddr.js";
+import ipaddr from "ipaddr.js";
 import rateLimit from "express-rate-limit";
 import { setGlobalDispatcher, EnvHttpProxyAgent } from "undici";
 import { getCommit, getBranch, getRemote, getVersion } from "@imput/version-info";
@@ -125,11 +126,13 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     const startTimestamp = startTime.getTime();
 
     const getServerInfo = (ip) => {
+    const getServerInfo = (ip) => {
         return JSON.stringify({
             cobalt: {
                 version: version,
                 url: env.apiURL,
                 startTime: `${startTimestamp}`,
+                turnstileSitekey: isSessionRequired(ip) ? env.turnstileSitekey : undefined,
                 turnstileSitekey: isSessionRequired(ip) ? env.turnstileSitekey : undefined,
                 services: [...env.enabledServices].map(e => {
                     return friendlyServiceName(e);
@@ -187,6 +190,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     });
 
     app.set('trust proxy', ['loopback', 'uniquelocal', '100.64.0.0/10']);
+    app.set('trust proxy', ['loopback', 'uniquelocal', '100.64.0.0/10']);
 
     app.use('/', cors({
         methods: ['GET', 'POST'],
@@ -225,6 +229,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
             // otherwise, we reject the request.
             if (
                 (isSessionRequired(getIP(req)) || !env.authRequired)
+                (isSessionRequired(getIP(req)) || !env.authRequired)
                 && ['missing', 'not_api_key'].includes(error)
             ) {
                 return next();
@@ -238,6 +243,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     });
 
     app.post('/', (req, res, next) => {
+        if (!isSessionRequired(getIP(req)) || req.rateLimitKey) {
         if (!isSessionRequired(getIP(req)) || req.rateLimitKey) {
             return next();
         }
@@ -267,6 +273,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
             return fail(res, "error.api.generic");
         }
         next();
+    }
     });
 
     app.post('/', apiLimiter);
@@ -284,6 +291,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     });
 
     app.post("/session", sessionLimiter, async (req, res) => {
+        if (!isSessionRequired(getIP(req))) {
         if (!isSessionRequired(getIP(req))) {
             return fail(res, "error.api.auth.not_configured")
         }
@@ -307,6 +315,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
             res.json(jwt.generate(getIP(req, 32)));
         } catch {
             return fail(res, "error.api.generic");
+        }
         }
     });
 
@@ -417,6 +426,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     app.get('/', (req, res) => {
         res.type('json');
         res.status(200).send(getServerInfo(getIP(req)));
+        res.status(200).send(getServerInfo(getIP(req)));
     })
 
     app.get('/favicon.ico', (req, res) => {
@@ -429,6 +439,7 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
 
     // handle all express errors
     app.use((_, __, res, ___) => {
+        console.error(_);
         console.error(_);
         return fail(res, "error.api.generic");
     })
@@ -484,4 +495,5 @@ export const runAPI = async (express, app, __dirname, isPrimary = true) => {
     });
 
     setupTunnelHandler();
+   }
 }

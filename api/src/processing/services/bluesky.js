@@ -20,7 +20,7 @@ const extractVideoNonHLS = async ({ did, cid, filename, dispatcher }) => {
             break;
         }
     };
-    
+        
     if (!didDoc) return { error: "fetch.fail" };
 
     const pds = didDoc.service.find(service => service.type === "AtprotoPersonalDataServer")

@@ -232,15 +232,6 @@ export const services = {
         altDomains: ["vkvideo.ru", "vk.ru"],
         playlistSupport: false
     },
-    xiaohongshu: {
-        patterns: [
-            "explore/:id?xsec_token=:token",
-            "discovery/item/:id?xsec_token=:token",
-            ":shareType/:shareId",
-        ],
-        altDomains: ["xhslink.com"],
-        playlistSupport: false
-    },
     youtube: {
         patterns: [
             "watch?v=:id",

@@ -54,7 +54,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+<<<<<<< HEAD
           target: ${{ matrix.target }}
+=======
+>>>>>>> upstream/meowing.de
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}

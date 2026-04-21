@@ -61,6 +61,7 @@ export function isHlsResponse(req, streamInfo) {
         // bluesky's cdn responds with wrong content-type for the hls playlist,
         // so we enforce it here until they fix it
         || (streamInfo.service === 'bsky' && streamInfo.url.endsWith('.m3u8'))
+        // dailymotion also responds with the wrong content-type sometimes
         || (streamInfo.service === 'dailymotion' && URL.parse(streamInfo.url)?.pathname.endsWith('.m3u8'));
 }
 
