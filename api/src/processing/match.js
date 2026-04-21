@@ -35,8 +35,6 @@ import threads from "./services/threads.js";
 
 const MAX_RETRY_AMOUNT = 5;
 
-const MAX_RETRY_AMOUNT = 5;
-
 let freebind;
 
 export default async function match({ host, patternMatch, params, authType, retryCount = 0 }) {
