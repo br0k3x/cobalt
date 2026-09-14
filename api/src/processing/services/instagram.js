@@ -149,6 +149,7 @@ export default function instagram(obj) {
         if (!embedData || !embedData?.contextJSON) return false;
 
         embedData = JSON.parse(embedData.contextJSON);
+        if (embedData.context.copyright_blocked) return;
 
         return embedData;
     }
@@ -223,28 +224,26 @@ export default function instagram(obj) {
                 ...headers,
                 cookie,
                 'content-type': 'application/x-www-form-urlencoded',
-                'X-FB-Friendly-Name': 'PolarisPostActionLoadPostQueryQuery',
+                'X-FB-Friendly-Name': 'PolarisPostRootQuery',
             },
             body: new URLSearchParams({
                 ...body,
                 fb_api_caller_class: 'RelayModern',
-                fb_api_req_friendly_name: 'PolarisPostActionLoadPostQueryQuery',
+                fb_api_req_friendly_name: 'PolarisPostRootQuery',
                 variables: JSON.stringify({
                     shortcode: id,
-                    fetch_tagged_user_count: null,
-                    hoisted_comment_id: null,
-                    hoisted_reply_id: null
+                    __relay_internal__pv__PolarisShortDramaEnabledrelayprovider: true,
+                    __relay_internal__pv__PolarisMultiCaptionCarouselEnabledrelayprovider: true,
                 }),
                 server_timestamps: true,
-                doc_id: '8845758582119845'
+                doc_id: '28077897148546091'
             }).toString()
         });
 
-        return {
-            gql_data: await req.json()
-                        .then(r => r.data)
-                        .catch(() => null)
-        };
+        const json = await req.json().catch(() => {});
+        if (!json) return;
+
+        return json?.data?.xdt_api__v1__media__shortcode__web_info?.items[0];
     }
 
     async function getErrorContext(id) {
@@ -305,6 +304,8 @@ export default function instagram(obj) {
         if (sidecar) {
             const picker = sidecar.edges.filter(e => e.node?.display_url)
                 .map((e, i) => {
+                    // if extracted from HTML embed, the first GraphVideo node from a "multipost" post sometimes
+                    // reports `is_video` without a `video_url`. this also breaks the official Instagram "multipost" embed.
                     const type = e.node?.is_video && e.node?.video_url ? "video" : "photo";
 
                     let url;
@@ -415,8 +416,9 @@ export default function instagram(obj) {
 
     async function getPost(id, alwaysProxy) {
         const hasData = (data) => data
-                                    && data.gql_data !== null
-                                    && data?.gql_data?.xdt_shortcode_media !== null;
+                                    && (data?.gql_data?.xdt_shortcode_media != null
+                                        || data?.gql_data?.shortcode_media != null
+                                        || data?.pk);
         let data, result;
         try {
             const cookie = getCookie('instagram');
@@ -436,13 +438,13 @@ export default function instagram(obj) {
             if (media_id && !hasData(data)) data = await requestMobileApi(media_id);
             if (media_id && cookie && !hasData(data)) data = await requestMobileApi(media_id, { cookie });
 
-            // html embed (no cookie, cookie)
-            if (!hasData(data)) data = await requestHTML(id);
-            if (!hasData(data) && cookie) data = await requestHTML(id, cookie);
-
             // web app graphql api (no cookie, cookie)
             if (!hasData(data)) data = await requestGQL(id);
             if (!hasData(data) && cookie) data = await requestGQL(id, cookie);
+
+            // html embed (no cookie, cookie)
+            if (!hasData(data)) data = await requestHTML(id);
+            if (!hasData(data) && cookie) data = await requestHTML(id, cookie);
         } catch {}
 
         if (!hasData(data)) {
